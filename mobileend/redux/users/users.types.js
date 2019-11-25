@@ -1,0 +1,7 @@
+const UsersActionTypes = {
+  GET_ALL_USERS_START: 'GET_ALL_USERS_START',
+  GET_ALL_USERS_SUCCESS: 'GET_ALL_USERS_SUCCESS',
+  GET_ALL_USERS_FAILURE: 'GET_ALL_USERS_FAILURE'
+};
+
+export default UsersActionTypes;

@@ -1,0 +1,22 @@
+# root
+node_modules/**/*
+
+# backend
+backend/.env
+backend/node_modules/**/*
+
+# mbileend
+mobileend/node_modules/**/*
+mobileend/.env
+mobileend/.expo/*
+mobileend/npm-debug.*
+mobileend/*.jks
+mobileend/*.p8
+mobileend/*.p12
+mobileend/*.key
+mobileend/*.mobileprovision
+mobileend/*.orig.*
+mobileend/web-build/
+mobileend/web-report/
+# macOS
+mobileend/.DS_Store
