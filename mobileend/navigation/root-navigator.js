@@ -6,10 +6,11 @@ import SignInOptionsScreen from '../screens/sign-in-options/sign-in-options.comp
 import SignInScreen from '../screens/sign-in/sign-in.component';
 import SignUpScreen from '../screens/sign-up/sign-up.component';
 import ChatsScreen from '../screens/chats/chats.component';
-import ChattingScreen from '../screens/chatting/chatting.component';
+import ChattingScreenContainer from '../screens/chatting/chatting.container';
 import UsersScreen from '../screens/users/users.component';
 import SettingsScreen from '../screens/settings/settings.component';
 import UserProfileScreen from '../screens/user-profile/user-profile.component';
+import EditGroupScreen from '../screens/edit-group/edit-group.component';
 
 import hideHeaderNavOptions from './hide-header-nav-options';
 
@@ -31,10 +32,11 @@ export const createRootNavigator = (currentUser, WizardDisplayed) => {
   const mainNavigator = createStackNavigator(
     {
       Chats: ChatsScreen,
-      Chatting: ChattingScreen,
+      Chatting: ChattingScreenContainer,
       Users: UsersScreen,
       Settings: SettingsScreen,
-      UserProfile: UserProfileScreen
+      UserProfile: UserProfileScreen,
+      EditGroup: EditGroupScreen
     },
     hideHeaderNavOptions
   );

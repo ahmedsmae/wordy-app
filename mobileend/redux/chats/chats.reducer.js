@@ -2,7 +2,7 @@ import ChatsActionTypes from './chats.types';
 
 const INITIAL_STATE = {
   userChats: [],
-  currentChat: null,
+  currentChatId: null,
   loading: false,
   errorMessage: ''
 };
@@ -10,15 +10,23 @@ const INITIAL_STATE = {
 const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
   switch (type) {
     case ChatsActionTypes.GET_ALL_USER_CHATS_START:
-    case ChatsActionTypes.GET_CHAT_BY_ID_START:
-    case ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_START:
+    case ChatsActionTypes.CREATE_GROUP_START:
       return {
         ...state,
         loading: true,
         errorMessage: ''
       };
 
+    case ChatsActionTypes.GET_CHAT_ID_START:
+      return {
+        ...state,
+        currentChatId: null,
+        loading: true,
+        errorMessage: ''
+      };
+
     case ChatsActionTypes.GET_ALL_USER_CHATS_SUCCESS:
+    case ChatsActionTypes.CREATE_GROUP_SUCCESS:
       return {
         ...state,
         userChats: payload,
@@ -26,11 +34,10 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
         errorMessage: ''
       };
 
-    case ChatsActionTypes.GET_CHAT_BY_ID_SUCCESS:
-    case ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_SUCCESS:
+    case ChatsActionTypes.GET_CHAT_ID_SUCCESS:
       return {
         ...state,
-        currentChat: payload,
+        currentChatId: payload,
         loading: false,
         errorMessage: ''
       };
@@ -43,11 +50,17 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
         errorMessage: payload
       };
 
-    case ChatsActionTypes.GET_CHAT_BY_ID_FAILURE:
-    case ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_FAILURE:
+    case ChatsActionTypes.CREATE_GROUP_FAILURE:
       return {
         ...state,
-        currentChat: null,
+        loading: false,
+        errorMessage: payload
+      };
+
+    case ChatsActionTypes.GET_CHAT_ID_FAILURE:
+      return {
+        ...state,
+        currentChatId: null,
         loading: false,
         errorMessage: payload
       };

@@ -8,24 +8,17 @@ import { PlaceholderParagraph, ListItem } from '../../components';
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { selectAllUsers } from '../../redux/users/users.selectors';
 import { getAllUsersStart } from '../../redux/users/users.actions';
-import { getChatByOpponentIdStart } from '../../redux/chats/chats.actions';
 
 import { APP_URLS } from '../../redux/utils/urls';
+import { getChatImageSource } from '../../utils/helper-functions';
 
-const Users = ({
-  navigation,
-  currentUser,
-  allUsers,
-  getAllUsersStart,
-  getChatByOpponentIdStart
-}) => {
+const Users = ({ navigation, allUsers, getAllUsersStart }) => {
   useEffect(() => {
     getAllUsersStart(err => {});
   }, []);
 
-  const _handleSelect = userId => {
-    getChatByOpponentIdStart(userId, err => {});
-    navigation.navigate('Chatting');
+  const _handleSelect = opponent => {
+    navigation.navigate('Chatting', { opponent });
   };
 
   return (
@@ -46,9 +39,15 @@ const Users = ({
           style={{ flex: 1 }}
           data={allUsers}
           keyExtractor={({ _id }) => _id}
-          renderItem={({
-            item: { _id, name, status, email, image_url, sign_in_method }
-          }) => {
+          renderItem={({ item }) => {
+            const {
+              _id,
+              name,
+              status,
+              email,
+              image_url,
+              sign_in_method
+            } = item;
             return (
               <ListItem
                 imageSource={
@@ -58,7 +57,7 @@ const Users = ({
                 }
                 title={name}
                 subtitle={status}
-                onPress={_handleSelect.bind(this, _id)}
+                onPress={_handleSelect.bind(this, item)}
               />
             );
           }}
@@ -82,9 +81,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getAllUsersStart: callback => dispatch(getAllUsersStart(callback)),
-  getChatByOpponentIdStart: (opponentId, callback) =>
-    dispatch(getChatByOpponentIdStart(opponentId, callback))
+  getAllUsersStart: callback => dispatch(getAllUsersStart(callback))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

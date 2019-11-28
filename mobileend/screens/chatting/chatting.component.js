@@ -1,145 +1,126 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
+import io from 'socket.io-client';
 import { createStructuredSelector } from 'reselect';
+
 import {
-  View,
   StyleSheet,
   FlatList,
   ScrollView,
-  KeyboardAvoidingView,
-  TextInput
+  KeyboardAvoidingView
 } from 'react-native';
-import { IconButton, Appbar, Avatar } from 'react-native-paper';
 import { PlaceholderParagraph } from '../../components';
+import InputSubmit from './input-submit.component';
+import MessageCard from './message-card.component';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
-import { selectCurrentChat } from '../../redux/chats/chats.selectors';
+import { BASE_URL } from '../../redux/utils/urls';
 
-import { APP_URLS } from '../../redux/utils/urls';
+class Chatting extends React.Component {
+  constructor(props) {
+    super(props);
+    this.socket;
+    this.flatListMessages = React.createRef();
 
-const Chatting = ({ navigation, currentChat, currentUser }) => {
-  console.log(currentChat);
-
-  const [message, setMessage] = useState('');
-
-  let opponent;
-
-  if (currentChat) {
-    opponent = currentChat.opponents.find(({ _id }) => _id !== currentUser._id);
-    console.log(opponent);
+    this.state = { opponents: [], messages: [], newMessage: '' };
   }
 
-  const _handleSend = () => {
-    if (message.trim() === '') return;
-    // action
+  componentWillUnmount() {
+    // this.socket.disconnect();
+    this.socket.close();
+  }
 
-    setMessage('');
+  componentDidMount() {
+    const chatId = this.props.chatId;
+
+    try {
+      this.socket = io(BASE_URL, { query: { chatId } });
+
+      this.socket.on('init_chat_from_server', chat => {
+        this.setState({ messages: chat.messages, opponents: chat.opponents });
+      });
+
+      this.socket.on('new_message_from_server', message => {
+        this.setState({ messages: this.state.messages.concat(message) });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  _scrollToBottom = () =>
+    this.flatListMessages.current.scrollToEnd({ animated: false });
+
+  _handleSend = () => {
+    const userId = this.props.currentUser._id;
+    const { newMessage } = this.state;
+
+    if (newMessage.trim() === '') return;
+
+    try {
+      this.socket.emit(
+        'new_message_from_client',
+        { text: newMessage, owner: userId },
+        err => {
+          this.setState({ newMessage: '' });
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  return (
-    <>
-      <Appbar.Header>
-        <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
-        <Avatar.Image
-          size={40}
-          source={{
-            uri:
-              opponent && opponent.sign_in_method === 'EMAIL/PASSWORD'
-                ? `${APP_URLS.SERVER_USER_AVATAR.url}/${opponent._id}`
-                : opponent && opponent.image_url
-          }}
-        />
-        <Appbar.Content
-          title={opponent && opponent.name}
-          subtitle={opponent && opponent.email}
-        />
-      </Appbar.Header>
+  render() {
+    const { currentUser } = this.props;
+    const { newMessage, messages, opponents } = this.state;
 
+    return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView
-          contentContainerStyle={styles.screen}
-          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flex: 1, backgroundColor: '#faf3e6' }}
+          keyboardShouldPersistTaps="always"
         >
-          {currentChat && currentChat.messages.length === 0 ? (
+          {messages.length === 0 ? (
             <PlaceholderParagraph
               title="This chat still empty"
               subtitle="Be Wordy and send the first message..."
             />
           ) : (
             <FlatList
-              style={{ flex: 1 }}
-              data={currentChat && currentChat.messages}
+              style={{ flex: 1, marginHorizontal: 10, marginBottom: 60 }}
+              ref={this.flatListMessages}
+              onContentSizeChange={this._scrollToBottom}
+              onLayout={this._scrollToBottom}
+              data={messages}
               keyExtractor={({ _id }) => _id}
-              renderItem={({ item: { _id, text, createdAt, owner } }) => {
-                return <></>;
-              }}
+              renderItem={({ item, index }) => (
+                <MessageCard
+                  message={item}
+                  userId={currentUser._id}
+                  messages={messages}
+                  opponents={opponents}
+                  index={index}
+                />
+              )}
             />
           )}
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholderTextColor="grey"
-              underlineColor="transparent"
-              underlineColorAndroid="transparent"
-              value={message}
-              onChangeText={text => setMessage(text)}
-              placeholder="Type a message..."
-            />
-            <IconButton
-              style={styles.button}
-              color="white"
-              icon="send"
-              size={25}
-              onPress={_handleSend}
-            />
-          </View>
+          <InputSubmit
+            text={newMessage}
+            onChangeText={text => this.setState({ newMessage: text })}
+            onSend={this._handleSend}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
-  );
-};
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  input: {
-    fontSize: 17,
-    backgroundColor: 'lightgrey',
-    marginLeft: 5,
-    flex: 1,
-    height: 50,
-    borderTopLeftRadius: 25,
-    borderBottomLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
-    elevation: 3,
-    paddingHorizontal: 15
-  },
-  button: {
-    backgroundColor: 'tomato',
-    padding: 5,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    elevation: 3
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'absolute',
-    margin: 2,
-    bottom: 0,
-    left: 0,
-    right: 0
-  }
+  screen: {}
 });
 
 const mapStateToProps = createStructuredSelector({
-  currentChat: selectCurrentChat,
   currentUser: selectCurrentUser
 });
 

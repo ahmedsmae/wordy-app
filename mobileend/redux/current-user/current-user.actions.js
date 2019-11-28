@@ -113,9 +113,4 @@ export const deleteUserFailure = errorMessage => ({
   payload: errorMessage
 });
 
-// EDIT EMPLOYEE INFO
-export const editEmployeeInfoStart = (info, callback) => ({
-  type: CurrentUserActionTypes.EDIT_EMPLOYEE_INFO_START,
-  payload: info,
-  callback
-});
+// EDIT USER INFO

@@ -7,7 +7,7 @@ export const selectUserChats = createSelector(
   chats => chats.userChats
 );
 
-export const selectCurrentChat = createSelector(
+export const selectCurrentChatId = createSelector(
   [selectChats],
-  chats => chats.currentChat
+  chats => chats.currentChatId
 );

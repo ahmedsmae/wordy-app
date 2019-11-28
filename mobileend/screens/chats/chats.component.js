@@ -3,24 +3,21 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import moment from 'moment';
 import { StyleSheet, FlatList } from 'react-native';
-import { Appbar, FAB, Provider, Menu } from 'react-native-paper';
+import { Appbar, FAB, Provider, Menu, Divider } from 'react-native-paper';
 import { PlaceholderParagraph, ListItem } from '../../components';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { selectUserChats } from '../../redux/chats/chats.selectors';
-import {
-  getAllUserChatsStart,
-  getChatByIdStart
-} from '../../redux/chats/chats.actions';
-
-import chatsData from './chats.data';
+import { getAllUserChatsStart } from '../../redux/chats/chats.actions';
+import { getChatImageSource, getOpponent } from '../../utils/helper-functions';
+import blankUserImage from '../../assets/user.png';
+import blankGroupImage from '../../assets/group.png';
 
 const Chats = ({
   navigation,
   currentUser,
   userChats,
-  getAllUserChatsStart,
-  getChatByIdStart
+  getAllUserChatsStart
 }) => {
   const [showMenu, setShowMenu] = useState(false);
 
@@ -28,9 +25,8 @@ const Chats = ({
     getAllUserChatsStart(err => {});
   }, []);
 
-  const _handleSelect = chatId => {
-    getChatByIdStart(chatId, err => {});
-    navigation.navigate('Chatting');
+  const _handleSelect = (chat, opponent) => {
+    navigation.navigate('Chatting', { chat, opponent });
   };
 
   return (
@@ -59,6 +55,18 @@ const Chats = ({
             }}
             title="Settings"
           />
+
+          <Divider />
+
+          <Menu.Item
+            style={{ paddingVertical: 0 }}
+            icon="plus"
+            onPress={() => {
+              setShowMenu(false);
+              navigation.navigate('EditGroup');
+            }}
+            title="Create Group"
+          />
         </Menu>
       </Appbar.Header>
 
@@ -73,21 +81,21 @@ const Chats = ({
           style={{ flex: 1 }}
           data={userChats}
           keyExtractor={({ _id }) => _id}
-          renderItem={({ item: { _id, opponents, messages } }) => {
-            const opponent = opponents.find(
-              ({ _id }) => _id !== currentUser._id
-            );
+          renderItem={({ item }) => {
+            const { _id, opponents, messages, group, name } = item;
+            const opponent = getOpponent(opponents, currentUser._id);
+
             return (
               <ListItem
-                imageSource={opponent.image_url}
-                title={opponent.name}
+                imageSource={getChatImageSource(item, opponent)}
+                title={group ? name : opponent.name}
                 subtitle={messages.length ? messages[0].text : ''}
                 time={
                   messages.length
                     ? moment(messages[0].createdAt).format('h:m a')
                     : ''
                 }
-                onPress={_handleSelect.bind(this, _id)}
+                onPress={_handleSelect.bind(this, item, opponent)}
               />
             );
           }}

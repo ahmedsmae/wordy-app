@@ -1,7 +1,7 @@
 {
   "name": "wordy",
   "version": "1.0.0",
-  "description": "Simple chat app with FeathersJS and React Native",
+  "description": "Simple chat app with SocketIo and React Native",
   "main": "/backend/server.js",
   "scripts": {
     "server": "npm start --prefix backend",
@@ -13,7 +13,7 @@
     "chat",
     "react-native",
     "react",
-    "feathers-js"
+    "socket-io"
   ],
   "author": "Ahmed Afifi",
   "license": "ISC",

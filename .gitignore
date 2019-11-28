@@ -2,8 +2,8 @@
 node_modules/**/*
 
 # backend
-backend/.env
 backend/node_modules/**/*
+backend/.env
 
 # mbileend
 mobileend/node_modules/**/*

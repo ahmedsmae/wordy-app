@@ -16,36 +16,36 @@ export const getAllUserChatsFailure = errorMessage => ({
   payload: errorMessage
 });
 
-// GET CHAT BY ID
-export const getChatByIdStart = (chatId, callback) => ({
-  type: ChatsActionTypes.GET_CHAT_BY_ID_START,
-  payload: chatId,
-  callback
-});
-
-export const getChatByIdSuccess = chat => ({
-  type: ChatsActionTypes.GET_CHAT_BY_ID_SUCCESS,
-  payload: chat
-});
-
-export const getChatByIdFailure = errorMessage => ({
-  type: ChatsActionTypes.GET_CHAT_BY_ID_FAILURE,
-  payload: errorMessage
-});
-
-// GET CHAT BY OPPONENT ID
-export const getChatByOpponentIdStart = (opponentId, callback) => ({
-  type: ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_START,
+// GET CHAT ID
+export const getChatIdStart = (opponentId, callback) => ({
+  type: ChatsActionTypes.GET_CHAT_ID_START,
   payload: opponentId,
   callback
 });
 
-export const getChatByOpponentIdSuccess = chat => ({
-  type: ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_SUCCESS,
-  payload: chat
+export const getChatIdSuccess = chatId => ({
+  type: ChatsActionTypes.GET_CHAT_ID_SUCCESS,
+  payload: chatId
 });
 
-export const getChatByOpponentIdFailure = errorMessage => ({
-  type: ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_FAILURE,
+export const getChatIdFailure = errorMessage => ({
+  type: ChatsActionTypes.GET_CHAT_ID_FAILURE,
+  payload: errorMessage
+});
+
+// CREATE GROUP
+export const createGroupStart = (groupData, callback) => ({
+  type: ChatsActionTypes.CREATE_GROUP_START,
+  payload: groupData,
+  callback
+});
+
+export const createGroupSuccess = userChats => ({
+  type: ChatsActionTypes.CREATE_GROUP_SUCCESS,
+  payload: userChats
+});
+
+export const createGroupFailure = errorMessage => ({
+  type: ChatsActionTypes.CREATE_GROUP_FAILURE,
   payload: errorMessage
 });

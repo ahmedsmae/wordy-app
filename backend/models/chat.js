@@ -1,23 +1,5 @@
 const mongoose = require('mongoose');
 
-const messageSchema = new mongoose.Schema({
-  owner: {
-    type: String,
-    required: true
-  },
-  text: {
-    type: String
-  },
-  seen: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
 const chatSchema = new mongoose.Schema(
   {
     opponents: {
@@ -29,13 +11,45 @@ const chatSchema = new mongoose.Schema(
       ],
       required: true
     },
+    admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    name: {
+      type: String,
+      trim: true
+    },
+    status: {
+      type: String,
+      trim: true
+    },
+    group: {
+      type: Boolean,
+      default: false
+    },
+    avatar: {
+      type: Buffer
+    },
+    image_uploaded: {
+      type: Boolean,
+      default: false
+    },
     messages: {
-      type: [messageSchema],
+      type: [Object],
       required: true
     }
   },
   { timestamps: true }
 );
+
+chatSchema.methods.toJSON = function() {
+  const chat = this;
+  const chatObject = chat.toObject();
+
+  delete chatObject.avatar;
+
+  return chatObject;
+};
 
 const Chat = mongoose.model('Chat', chatSchema);
 

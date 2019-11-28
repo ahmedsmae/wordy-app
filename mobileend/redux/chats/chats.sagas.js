@@ -3,15 +3,16 @@ import axios from 'axios';
 
 import { APP_URLS } from '../utils/urls';
 import setAuthToken from '../utils/set-auth-token';
+import { createImageAndDataFD } from '../utils/create-form-data';
 
 import ChatsActionTypes from './chats.types';
 import {
   getAllUserChatsSuccess,
   getAllUserChatsFailure,
-  getChatByIdSuccess,
-  getChatByIdFailure,
-  getChatByOpponentIdSuccess,
-  getChatByOpponentIdFailure
+  getChatIdSuccess,
+  getChatIdFailure,
+  createGroupSuccess,
+  createGroupFailure
 } from './chats.actions';
 
 function* getAllUserChatsAsync({ callback }) {
@@ -29,36 +30,41 @@ function* getAllUserChatsAsync({ callback }) {
   }
 }
 
-function* getChatByIdAsync({ payload, callback }) {
+function* getChatIdAsync({ payload, callback }) {
   try {
     yield setAuthToken();
 
-    const response = yield call(axios, APP_URLS.GET_CHAT_BY_ID(payload));
+    const response = yield call(axios, APP_URLS.GET_CHAT_ID(payload));
 
     yield call(callback);
-    yield put(getChatByIdSuccess(response.data.chat));
+    yield put(getChatIdSuccess(response.data.chatId));
   } catch (err) {
     yield call(callback, err);
-    yield put(getChatByIdFailure(err.message));
-    console.log('getChatByIdAsync', err.response);
+    yield put(getChatIdFailure(err.message));
+    console.log('getChatIdAsync', err.response);
   }
 }
 
-function* getChatByOpponentIdAsync({ payload, callback }) {
+function* createGroupAsync({ payload: { avatar, ...otherProps }, callback }) {
   try {
     yield setAuthToken();
 
+    const formData = createImageAndDataFD('avatar', avatar, otherProps);
+
     const response = yield call(
-      axios,
-      APP_URLS.GET_CHAT_BY_OPPONENT_ID(payload)
+      axios.post,
+      APP_URLS.CREATE_GROUP.url,
+      formData
     );
 
     yield call(callback);
-    yield put(getChatByOpponentIdSuccess(response.data.chat));
+    yield put(createGroupSuccess(response.data.userChats));
   } catch (err) {
+    console.log(err);
+
     yield call(callback, err);
-    yield put(getChatByOpponentIdFailure(err.message));
-    console.log('getChatByOpponentIdAsync', err.response);
+    yield put(createGroupFailure(err.message));
+    console.log('createGroupAsync', err.response);
   }
 }
 
@@ -69,21 +75,18 @@ function* getAllUserChatsStart() {
   );
 }
 
-function* getChatByIdStart() {
-  yield takeLatest(ChatsActionTypes.GET_CHAT_BY_ID_START, getChatByIdAsync);
+function* getChatIdStart() {
+  yield takeLatest(ChatsActionTypes.GET_CHAT_ID_START, getChatIdAsync);
 }
 
-function* getChatByOpponentIdStart() {
-  yield takeLatest(
-    ChatsActionTypes.GET_CHAT_BY_OPPONENT_ID_START,
-    getChatByOpponentIdAsync
-  );
+function* createGroupStart() {
+  yield takeLatest(ChatsActionTypes.CREATE_GROUP_START, createGroupAsync);
 }
 
 export default function* chatsSagas() {
   yield all([
     call(getAllUserChatsStart),
-    call(getChatByIdStart),
-    call(getChatByOpponentIdStart)
+    call(getChatIdStart),
+    call(createGroupStart)
   ]);
 }

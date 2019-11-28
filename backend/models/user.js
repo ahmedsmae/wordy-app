@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    image_uploaded: {
+      type: Boolean,
+      default: false
+    },
     status: {
       type: String,
       trim: true,

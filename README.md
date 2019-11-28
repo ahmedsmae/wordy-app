@@ -1,3 +1,3 @@
 # WORDY
 
-Simple chat app uses FeathersJS and React Native
+Simple chat app uses SocketIo and React Native

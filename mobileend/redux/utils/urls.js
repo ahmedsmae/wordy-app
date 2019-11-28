@@ -58,12 +58,12 @@ export const APP_URLS = {
     method: 'GET',
     url: `${BASE_URL}/api/users/allusers`
   },
-  GET_CHAT_BY_ID: chatId => ({
+  GET_CHAT_ID: opponentId => ({
     method: 'GET',
-    url: `${BASE_URL}/api/chats/getchatbyid/${chatId}`
+    url: `${BASE_URL}/api/chats/getchatid/${opponentId}`
   }),
-  GET_CHAT_BY_OPPONENT_ID: opponentId => ({
-    method: 'GET',
-    url: `${BASE_URL}/api/chats/getchatbyopponentid/${opponentId}`
-  })
+  CREATE_GROUP: {
+    method: 'POST',
+    url: `${BASE_URL}/api/chats/creategroup`
+  }
 };

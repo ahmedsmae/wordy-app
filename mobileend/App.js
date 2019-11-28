@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, YellowBox } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux';
@@ -17,6 +17,10 @@ import { selectCurrentUser } from './redux/current-user/current-user.selectors';
 import { loadingUserStart } from './redux/current-user/current-user.actions';
 
 enableScreens();
+// Supress unnecessary warnings
+YellowBox.ignoreWarnings([
+  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
 
 const App = ({ loadingUserStart, currentUser }) => {
   const [dataLoaded, setDataLoaded] = useState(false);
