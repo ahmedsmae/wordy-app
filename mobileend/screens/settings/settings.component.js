@@ -5,11 +5,17 @@ import { StyleSheet } from 'react-native';
 import { Appbar, List, Paragraph, Divider, Avatar } from 'react-native-paper';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { signoutUserStart } from '../../redux/current-user/current-user.actions';
 
-import { APP_URLS } from '../../redux/utils/urls';
+import { getUserImageSource } from '../../utils/helper-functions';
 
-const Settings = ({ navigation, currentUser, signoutUserStart }) => {
+const Settings = ({
+  navigation,
+  currentUser,
+  signoutUserStart,
+  randomDate
+}) => {
   return (
     <>
       <Appbar.Header>
@@ -27,12 +33,7 @@ const Settings = ({ navigation, currentUser, signoutUserStart }) => {
             {...props}
             style={{ marginHorizontal: 15 }}
             size={70}
-            source={{
-              uri:
-                currentUser.sign_in_method === 'EMAIL/PASSWORD'
-                  ? `${APP_URLS.SERVER_USER_AVATAR.url}/${currentUser._id}`
-                  : currentUser.image_url
-            }}
+            source={getUserImageSource(currentUser, randomDate)}
           />
         )}
         onPress={() => navigation.navigate('UserProfile')}
@@ -42,30 +43,42 @@ const Settings = ({ navigation, currentUser, signoutUserStart }) => {
 
       <List.Item
         style={{ paddingLeft: 25, paddingVertical: 10 }}
-        title="User Agreement"
-        description="Item description"
-        left={props => (
-          <List.Icon {...props} icon="thumb-up-outline" color="teal" />
-        )}
-        onPress={() => navigation.navigate('')}
-      />
-
-      <List.Item
-        style={{ paddingLeft: 25, paddingVertical: 10 }}
         title="Sign Out"
         description="Item description"
         left={props => <List.Icon {...props} icon="exit-to-app" color="teal" />}
         onPress={() => signoutUserStart(err => {})}
       />
 
+      {currentUser.sign_in_method === 'EMAIL/PASSWORD' && (
+        <List.Item
+          style={{ paddingLeft: 25, paddingVertical: 10 }}
+          title="Change Password"
+          description="Item description"
+          left={props => (
+            <List.Icon {...props} icon="find-replace" color="teal" />
+          )}
+          onPress={() => navigation.navigate('ChangePassword')}
+        />
+      )}
+
       <List.Item
         style={{ paddingLeft: 25, paddingVertical: 10 }}
-        title="Change Password"
+        title="Contact Us"
         description="Item description"
         left={props => (
-          <List.Icon {...props} icon="find-replace" color="teal" />
+          <List.Icon {...props} icon="contact-mail" color="teal" />
         )}
-        onPress={() => navigation.navigate('')}
+        onPress={() => navigation.navigate('ContactUs')}
+      />
+
+      <List.Item
+        style={{ paddingLeft: 25, paddingVertical: 10 }}
+        title="User Agreement"
+        description="Item description"
+        left={props => (
+          <List.Icon {...props} icon="thumb-up-outline" color="teal" />
+        )}
+        onPress={() => navigation.navigate('UserAgreement')}
       />
 
       <List.Item
@@ -75,7 +88,17 @@ const Settings = ({ navigation, currentUser, signoutUserStart }) => {
         left={props => (
           <List.Icon {...props} icon="information-outline" color="teal" />
         )}
-        onPress={() => navigation.navigate('')}
+        onPress={() => navigation.navigate('About')}
+      />
+
+      <List.Item
+        style={{ paddingLeft: 25, paddingVertical: 10 }}
+        title="Delete User"
+        description="Item description"
+        left={props => (
+          <List.Icon {...props} icon="account-remove-outline" color="teal" />
+        )}
+        onPress={() => navigation.navigate('DeleteUser')}
       />
 
       <Paragraph
@@ -104,7 +127,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  randomDate: selectRandomDate
 });
 
 const mapDispatchToProps = dispatch => ({

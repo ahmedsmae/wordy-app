@@ -22,22 +22,47 @@ class Chatting extends React.Component {
     this.socket;
     this.flatListMessages = React.createRef();
 
-    this.state = { opponents: [], messages: [], newMessage: '' };
+    this.state = { group: false, opponents: [], messages: [], newMessage: '' };
   }
 
   componentWillUnmount() {
-    // this.socket.disconnect();
     this.socket.close();
   }
 
+  componentWillReceiveProps({ contact }) {
+    const userId = this.props.currentUser._id;
+
+    if (contact) {
+      const contactText = `${contact.name}\n${contact.phoneNumbers
+        .map(({ number }) => number)
+        .join(', ')}`;
+
+      try {
+        this.socket.emit(
+          'new_message_from_client',
+          { text: contactText, owner: userId },
+          err => {
+            this.setState({ newMessage: '' });
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
   componentDidMount() {
-    const chatId = this.props.chatId;
+    const { chatId } = this.props;
 
     try {
       this.socket = io(BASE_URL, { query: { chatId } });
 
       this.socket.on('init_chat_from_server', chat => {
-        this.setState({ messages: chat.messages, opponents: chat.opponents });
+        this.setState({
+          messages: chat.messages,
+          opponents: chat.opponents,
+          group: chat.group
+        });
       });
 
       this.socket.on('new_message_from_server', message => {
@@ -71,8 +96,8 @@ class Chatting extends React.Component {
   };
 
   render() {
-    const { currentUser } = this.props;
-    const { newMessage, messages, opponents } = this.state;
+    const { currentUser, navigateToContacts } = this.props;
+    const { newMessage, messages, opponents, group } = this.state;
 
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -100,6 +125,7 @@ class Chatting extends React.Component {
                   messages={messages}
                   opponents={opponents}
                   index={index}
+                  group={group}
                 />
               )}
             />
@@ -109,6 +135,9 @@ class Chatting extends React.Component {
             text={newMessage}
             onChangeText={text => this.setState({ newMessage: text })}
             onSend={this._handleSend}
+            onImageFromCamera={image => {}}
+            onImageFromGallery={image => {}}
+            navigateToContacts={navigateToContacts}
           />
         </ScrollView>
       </KeyboardAvoidingView>

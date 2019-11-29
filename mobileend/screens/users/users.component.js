@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { StyleSheet, FlatList } from 'react-native';
@@ -7,12 +7,12 @@ import { PlaceholderParagraph, ListItem } from '../../components';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { selectAllUsers } from '../../redux/users/users.selectors';
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getAllUsersStart } from '../../redux/users/users.actions';
 
-import { APP_URLS } from '../../redux/utils/urls';
-import { getChatImageSource } from '../../utils/helper-functions';
+import { getUserImageSource } from '../../utils/helper-functions';
 
-const Users = ({ navigation, allUsers, getAllUsersStart }) => {
+const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
   useEffect(() => {
     getAllUsersStart(err => {});
   }, []);
@@ -40,21 +40,11 @@ const Users = ({ navigation, allUsers, getAllUsersStart }) => {
           data={allUsers}
           keyExtractor={({ _id }) => _id}
           renderItem={({ item }) => {
-            const {
-              _id,
-              name,
-              status,
-              email,
-              image_url,
-              sign_in_method
-            } = item;
+            const { name, status } = item;
+
             return (
               <ListItem
-                imageSource={
-                  sign_in_method === 'EMAIL/PASSWORD'
-                    ? `${APP_URLS.SERVER_USER_AVATAR.url}/${_id}`
-                    : image_url
-                }
+                imageSource={getUserImageSource(item, randomDate)}
                 title={name}
                 subtitle={status}
                 onPress={_handleSelect.bind(this, item)}
@@ -77,7 +67,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  allUsers: selectAllUsers
+  allUsers: selectAllUsers,
+  randomDate: selectRandomDate
 });
 
 const mapDispatchToProps = dispatch => ({

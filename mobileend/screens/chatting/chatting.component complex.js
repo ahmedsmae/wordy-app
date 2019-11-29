@@ -113,7 +113,7 @@ class Chatting extends React.Component {
             source={{
               uri:
                 sign_in_method === 'EMAIL/PASSWORD'
-                  ? `${APP_URLS.SERVER_USER_AVATAR.url}/${_id}`
+                  ? `${APP_URLS.SERVE_USER_AVATAR.url}/${_id}`
                   : image_url
             }}
           />

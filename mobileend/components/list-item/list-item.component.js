@@ -7,13 +7,15 @@ const ListItem = ({ imageSource, title, subtitle, time, onPress }) => {
       <List.Item
         titleStyle={{ fontSize: 18 }}
         title={title}
+        titleNumberOfLines={1}
         description={subtitle}
+        descriptionNumberOfLines={1}
         left={props => (
           <Avatar.Image
             {...props}
             style={{ marginHorizontal: 5 }}
             size={60}
-            source={{ uri: imageSource }}
+            source={imageSource}
           />
         )}
         onPress={onPress}

@@ -15,6 +15,11 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
     case CurrentUserActionTypes.LOADING_USER_START:
     case CurrentUserActionTypes.SIGN_OUT_USER_START:
     case CurrentUserActionTypes.DELETE_USER_START:
+    case CurrentUserActionTypes.UPDATE_USER_AVATAR_START:
+    case CurrentUserActionTypes.UPDATE_USER_INFO_START:
+    case CurrentUserActionTypes.CHANGE_USER_PASSWORD_START:
+    case CurrentUserActionTypes.FORGET_USER_PASSWORD_START:
+    case CurrentUserActionTypes.CONTACT_US_START:
       return {
         ...state,
         loading: true,
@@ -26,6 +31,9 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
     case CurrentUserActionTypes.SIGN_IN_WITH_FACEBOOK_SUCCESS:
     case CurrentUserActionTypes.SIGN_IN_WITH_GOOGLE_SUCCESS:
     case CurrentUserActionTypes.LOADING_USER_SUCCESS:
+    case CurrentUserActionTypes.UPDATE_USER_AVATAR_SUCCESS:
+    case CurrentUserActionTypes.UPDATE_USER_INFO_SUCCESS:
+    case CurrentUserActionTypes.CHANGE_USER_PASSWORD_SUCCESS:
       return {
         ...state,
         currentUser: payload.user,
@@ -35,6 +43,7 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
 
     case CurrentUserActionTypes.SIGN_OUT_USER_SUCCESS:
     case CurrentUserActionTypes.DELETE_USER_SUCCESS:
+    case CurrentUserActionTypes.FORGET_USER_PASSWORD_SUCCESS:
       return INITIAL_STATE;
 
     case CurrentUserActionTypes.SIGN_UP_USER_FAILURE:
@@ -50,6 +59,18 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
         loading: false,
         errorMessage: payload
       };
+
+    case CurrentUserActionTypes.UPDATE_USER_AVATAR_FAILURE:
+    case CurrentUserActionTypes.UPDATE_USER_INFO_FAILURE:
+    case CurrentUserActionTypes.CHANGE_USER_PASSWORD_FAILURE:
+    case CurrentUserActionTypes.FORGET_USER_PASSWORD_FAILURE:
+    case CurrentUserActionTypes.CONTACT_US_FAILURE:
+      return {
+        ...state,
+        errorMessage: payload
+      };
+
+    // case CurrentUserActionTypes.CONTACT_US_SUCCESS:
 
     default:
       return state;

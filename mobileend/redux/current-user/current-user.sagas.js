@@ -6,6 +6,7 @@ import * as Google from 'expo-google-app-auth';
 
 import { APP_URLS } from '../utils/urls';
 import setAuthToken from '../utils/set-auth-token';
+import { createImageFD } from '../utils/create-form-data';
 
 import CurrentUserActionTypes from './current-user.types';
 import {
@@ -17,10 +18,20 @@ import {
   signInWithFacebookFailure,
   signInWithGoogleSuccess,
   signInWithGoogleFailure,
+  updateUserAvatarSuccess,
+  updateUserAvatarFailure,
+  updateUserInfoSuccess,
+  updateUserInfoFailure,
   loadingUserSuccess,
   loadingUserFailure,
   signoutUserSuccess,
   signoutUserFailure,
+  changeUserPasswordSuccess,
+  changeUserPasswordFailure,
+  forgetUserPasswordSuccess,
+  forgetUserPasswordFailure,
+  contactUsSuccess,
+  contactUsFailure,
   deleteUserSuccess,
   deleteUserFailure
 } from './current-user.actions';
@@ -108,6 +119,42 @@ function* signInWithGoogleAsync({ callback }) {
   }
 }
 
+function* updateUserAvatarAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    const formData = createImageFD('avatar', payload);
+
+    const response = yield call(
+      axios.post,
+      APP_URLS.UPDATE_USER_AVATAR.url,
+      formData
+    );
+
+    yield call(callback);
+    yield put(updateUserAvatarSuccess(response.data));
+  } catch (err) {
+    yield call(callback, err);
+    console.log('updateUserAvatarAsync', err.response);
+    yield put(updateUserAvatarFailure(err.message));
+  }
+}
+
+function* updateUserInfoAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    const response = yield call(axios, APP_URLS.UPDATE_USER_INFO(payload));
+
+    yield call(callback);
+    yield put(updateUserInfoSuccess(response.data));
+  } catch (err) {
+    yield call(callback, err);
+    console.log('updateUserInfoAsync', err.response);
+    yield put(updateUserInfoFailure(err.message));
+  }
+}
+
 function* loadingUserAsync({ callback }) {
   try {
     yield setAuthToken();
@@ -137,6 +184,49 @@ function* signOutUserAsync({ callback }) {
     yield call(callback, err);
     console.log('signOutUserAsync', err.response);
     yield put(signoutUserFailure(err.message));
+  }
+}
+
+function* changeUserPasswordAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    const response = yield call(axios, APP_URLS.CHANGE_USER_PASSWORD(payload));
+
+    yield AsyncStorage.setItem('BASIC_TOKEN', response.data.token);
+
+    yield call(callback);
+    yield put(changeUserPasswordSuccess(response.data));
+  } catch (err) {
+    yield call(callback, err);
+    console.log('changeUserPasswordAsync', err.response);
+    yield put(changeUserPasswordFailure(err.message));
+  }
+}
+
+function* forgetUserPasswordAsync({ payload, callback }) {
+  try {
+    yield call(axios, APP_URLS.FORGET_USER_PASSWORD(payload));
+
+    yield call(callback);
+    yield put(forgetUserPasswordSuccess());
+  } catch (err) {
+    yield call(callback, err);
+    console.log('forgetUserPasswordAsync', err.response);
+    yield put(forgetUserPasswordFailure(err.message));
+  }
+}
+
+function* contactUsAsync({ payload, callback }) {
+  try {
+    yield call(axios, APP_URLS.CONTACT_US(payload));
+
+    yield call(callback);
+    yield put(contactUsSuccess());
+  } catch (err) {
+    yield call(callback, err);
+    console.log('contactUsAsync', err.response);
+    yield put(contactUsFailure(err.message));
   }
 }
 
@@ -179,6 +269,20 @@ function* signInWithGoogleStart() {
   );
 }
 
+function* updateUserAvatarStart() {
+  yield takeLatest(
+    CurrentUserActionTypes.UPDATE_USER_AVATAR_START,
+    updateUserAvatarAsync
+  );
+}
+
+function* updateUserInfoStart() {
+  yield takeLatest(
+    CurrentUserActionTypes.UPDATE_USER_INFO_START,
+    updateUserInfoAsync
+  );
+}
+
 function* loadingUserStart() {
   yield takeLatest(CurrentUserActionTypes.LOADING_USER_START, loadingUserAsync);
 }
@@ -188,6 +292,24 @@ function* signOutUserStart() {
     CurrentUserActionTypes.SIGN_OUT_USER_START,
     signOutUserAsync
   );
+}
+
+function* changeUserPasswordStart() {
+  yield takeLatest(
+    CurrentUserActionTypes.CHANGE_USER_PASSWORD_START,
+    changeUserPasswordAsync
+  );
+}
+
+function* forgetUserPasswordStart() {
+  yield takeLatest(
+    CurrentUserActionTypes.FORGET_USER_PASSWORD_START,
+    forgetUserPasswordAsync
+  );
+}
+
+function* contactUsStart() {
+  yield takeLatest(CurrentUserActionTypes.CONTACT_US_START, contactUsAsync);
 }
 
 function* deleteUserStart() {
@@ -200,8 +322,13 @@ export default function* currentUserSagas() {
     call(signInUserStart),
     call(signInWithFacebookStart),
     call(signInWithGoogleStart),
+    call(updateUserAvatarStart),
+    call(updateUserInfoStart),
     call(loadingUserStart),
     call(signOutUserStart),
+    call(changeUserPasswordStart),
+    call(forgetUserPasswordStart),
+    call(contactUsStart),
     call(deleteUserStart)
   ]);
 }

@@ -66,15 +66,49 @@ export const signInWithGoogleFailure = errorMessage => ({
   payload: errorMessage
 });
 
+// UPDATE USER AVATAR
+export const updateUserAvatarStart = (avatar, callback) => ({
+  type: CurrentUserActionTypes.UPDATE_USER_AVATAR_START,
+  payload: avatar,
+  callback
+});
+
+export const updateUserAvatarSuccess = user => ({
+  type: CurrentUserActionTypes.UPDATE_USER_AVATAR_SUCCESS,
+  payload: user
+});
+
+export const updateUserAvatarFailure = errorMessage => ({
+  type: CurrentUserActionTypes.UPDATE_USER_AVATAR_FAILURE,
+  payload: errorMessage
+});
+
+// UPDATE USER INFO
+export const updateUserInfoStart = (userInfo, callback) => ({
+  type: CurrentUserActionTypes.UPDATE_USER_INFO_START,
+  payload: userInfo,
+  callback
+});
+
+export const updateUserInfoSuccess = user => ({
+  type: CurrentUserActionTypes.UPDATE_USER_INFO_SUCCESS,
+  payload: user
+});
+
+export const updateUserInfoFailure = errorMessage => ({
+  type: CurrentUserActionTypes.UPDATE_USER_INFO_FAILURE,
+  payload: errorMessage
+});
+
 // LOADING USER
 export const loadingUserStart = callback => ({
   type: CurrentUserActionTypes.LOADING_USER_START,
   callback
 });
 
-export const loadingUserSuccess = results => ({
+export const loadingUserSuccess = user => ({
   type: CurrentUserActionTypes.LOADING_USER_SUCCESS,
-  payload: results
+  payload: user
 });
 
 export const loadingUserFailure = errorMessage => ({
@@ -97,6 +131,55 @@ export const signoutUserFailure = errorMessage => ({
   payload: errorMessage
 });
 
+// CHANGE USER PASSWORD
+export const changeUserPasswordStart = (passwords, callback) => ({
+  type: CurrentUserActionTypes.CHANGE_USER_PASSWORD_START,
+  payload: passwords,
+  callback
+});
+
+export const changeUserPasswordSuccess = (user, token) => ({
+  type: CurrentUserActionTypes.CHANGE_USER_PASSWORD_SUCCESS,
+  payload: { user, token }
+});
+
+export const changeUserPasswordFailure = errorMessage => ({
+  type: CurrentUserActionTypes.CHANGE_USER_PASSWORD_FAILURE,
+  payload: errorMessage
+});
+
+// FORGET USER PASSWORD
+export const forgetUserPasswordStart = (email, callback) => ({
+  type: CurrentUserActionTypes.CHANGE_USER_PASSWORD_START,
+  payload: email,
+  callback
+});
+
+export const forgetUserPasswordSuccess = () => ({
+  type: CurrentUserActionTypes.CHANGE_USER_PASSWORD_SUCCESS
+});
+
+export const forgetUserPasswordFailure = errorMessage => ({
+  type: CurrentUserActionTypes.CHANGE_USER_PASSWORD_FAILURE,
+  payload: errorMessage
+});
+
+// CONTACT US
+export const contactUsStart = (contactInfo, callback) => ({
+  type: CurrentUserActionTypes.CONTACT_US_START,
+  payload: contactInfo,
+  callback
+});
+
+export const contactUsSuccess = () => ({
+  type: CurrentUserActionTypes.CONTACT_US_SUCCESS
+});
+
+export const contactUsFailure = errorMessage => ({
+  type: CurrentUserActionTypes.CONTACT_US_FAILURE,
+  payload: errorMessage
+});
+
 // DELETE USER
 export const deleteUserStart = (deleteData, callback) => ({
   type: CurrentUserActionTypes.DELETE_USER_START,
@@ -112,5 +195,3 @@ export const deleteUserFailure = errorMessage => ({
   type: CurrentUserActionTypes.DELETE_USER_FAILURE,
   payload: errorMessage
 });
-
-// EDIT USER INFO

@@ -35,8 +35,10 @@ router.get('/alluserchats', auth, async (req, res) => {
         image_uploaded: 1,
         messages: { $slice: -1 }
       }
-    ).populate('opponents', '-tokens');
-    // exclude tokens when u populate opponents
+    )
+      .populate('opponents', '-tokens')
+      .populate('admin', '-tokens');
+    // exclude tokens when u populate opponents or admin
 
     res.json({ userChats });
   } catch (err) {
@@ -78,6 +80,31 @@ router.get('/getchatid/:opponentid', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ errors: [{ msg: err.message }] });
+  }
+});
+
+/**
+ * @method - GET
+ * @url - '/api/chats/avatar/:chatid'
+ * @data - No data
+ * @action - serving chat avatar
+ * @access - public
+ */
+router.get('/avatar/:chatid', async (req, res) => {
+  try {
+    const chat = await Chat.findById(req.params.chatid);
+
+    if (!chat) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'Chat does not exists' }] });
+    }
+
+    res.set('Content-Type', 'image/jpg');
+    res.send(chat.avatar);
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({ errors: [{ msg: err.message }] });
   }
 });
 

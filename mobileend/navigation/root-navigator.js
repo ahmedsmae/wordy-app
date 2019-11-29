@@ -11,6 +11,13 @@ import UsersScreen from '../screens/users/users.component';
 import SettingsScreen from '../screens/settings/settings.component';
 import UserProfileScreen from '../screens/user-profile/user-profile.component';
 import EditGroupScreen from '../screens/edit-group/edit-group.component';
+import DeleteUserScreen from '../screens/delete-user/delete-user.component';
+import ChangePasswordScreen from '../screens/change-password/change-password.component';
+import ForgetPasswordScreen from '../screens/forget-password/forget-password.component';
+import ContactUsScreen from '../screens/contact-us/contact-us.component';
+import AboutScreen from '../screens/about/about.component';
+import UserAgreementScreen from '../screens/user-agreement/user-agreement.component';
+import ContactsScreen from '../screens/contacts/contacts.component';
 
 import hideHeaderNavOptions from './hide-header-nav-options';
 
@@ -20,7 +27,8 @@ export const createRootNavigator = (currentUser, WizardDisplayed) => {
       AppWizard: AppWizardScreen,
       SignInOptions: SignInOptionsScreen,
       SignIn: SignInScreen,
-      SignUp: SignUpScreen
+      SignUp: SignUpScreen,
+      ForgetPassword: ForgetPasswordScreen
     },
     {
       initialRouteName:
@@ -33,10 +41,16 @@ export const createRootNavigator = (currentUser, WizardDisplayed) => {
     {
       Chats: ChatsScreen,
       Chatting: ChattingScreenContainer,
+      Contacts: ContactsScreen,
       Users: UsersScreen,
       Settings: SettingsScreen,
       UserProfile: UserProfileScreen,
-      EditGroup: EditGroupScreen
+      ChangePassword: ChangePasswordScreen,
+      ContactUs: ContactUsScreen,
+      DeleteUser: DeleteUserScreen,
+      EditGroup: EditGroupScreen,
+      About: AboutScreen,
+      UserAgreement: UserAgreementScreen
     },
     hideHeaderNavOptions
   );

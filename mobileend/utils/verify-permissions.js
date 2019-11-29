@@ -9,7 +9,20 @@ export const verifyCameraPermissions = async () => {
   if (result.status !== 'granted') {
     Alert.alert(
       'Insufficient permissions!',
-      'You need to grant camera permissions to use this app.',
+      'You need to grant camera permissions to use this feature.',
+      [{ text: 'Okay' }]
+    );
+    return false;
+  }
+  return true;
+};
+
+export const verifyContactsPermission = async () => {
+  const result = await Permissions.askAsync(Permissions.CONTACTS);
+  if (result.status !== 'granted') {
+    Alert.alert(
+      'Insufficient permissions!',
+      'You need to grant read contacts permission to use this feature.',
       [{ text: 'Okay' }]
     );
     return false;

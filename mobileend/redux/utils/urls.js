@@ -24,6 +24,25 @@ export const APP_URLS = {
     method: 'POST',
     url: `${BASE_URL}/api/users/signinwithgoogle`
   },
+  UPDATE_USER_AVATAR: {
+    method: 'POST',
+    url: `${BASE_URL}/api/users/updateavatar`
+  },
+  UPDATE_USER_INFO: userInfo => ({
+    method: 'PATCH',
+    url: `${BASE_URL}/api/users/updateinfo`,
+    data: userInfo
+  }),
+  CHANGE_USER_PASSWORD: userPasswords => ({
+    method: 'PATCH',
+    url: `${BASE_URL}/api/users/changepassword`,
+    data: userPasswords
+  }),
+  FORGET_USER_PASSWORD: email => ({
+    method: 'POST',
+    url: `${BASE_URL}/api/users/forgetpassword`,
+    data: email
+  }),
   LOAD_USER: {
     method: 'GET',
     url: `${BASE_URL}/api/users/auth`
@@ -37,9 +56,18 @@ export const APP_URLS = {
     url: `${BASE_URL}/api/users/deleteuser`,
     data: deleteData
   }),
-  SERVER_USER_AVATAR: {
+  CONTACT_US: contactData => ({
+    method: 'POST',
+    url: `${BASE_URL}/api/users/contactus`,
+    data: contactData
+  }),
+  SERVE_USER_AVATAR: {
     method: 'GET',
     url: `${BASE_URL}/api/users/avatar`
+  },
+  SERVE_CHAT_AVATAR: {
+    method: 'GET',
+    url: `${BASE_URL}/api/chats/avatar`
   },
   EDIT_USER_INFO: userInfo => ({
     method: 'PATCH',
@@ -65,5 +93,9 @@ export const APP_URLS = {
   CREATE_GROUP: {
     method: 'POST',
     url: `${BASE_URL}/api/chats/creategroup`
+  },
+  UPDATE_GROUP_INFO: {
+    method: 'PATCH',
+    url: `${BASE_URL}/api/chats/updategroupinfo`
   }
 };

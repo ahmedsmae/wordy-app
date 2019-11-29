@@ -8,16 +8,16 @@ import { PlaceholderParagraph, ListItem } from '../../components';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { selectUserChats } from '../../redux/chats/chats.selectors';
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getAllUserChatsStart } from '../../redux/chats/chats.actions';
 import { getChatImageSource, getOpponent } from '../../utils/helper-functions';
-import blankUserImage from '../../assets/user.png';
-import blankGroupImage from '../../assets/group.png';
 
 const Chats = ({
   navigation,
   currentUser,
   userChats,
-  getAllUserChatsStart
+  getAllUserChatsStart,
+  randomDate
 }) => {
   const [showMenu, setShowMenu] = useState(false);
 
@@ -87,7 +87,7 @@ const Chats = ({
 
             return (
               <ListItem
-                imageSource={getChatImageSource(item, opponent)}
+                imageSource={getChatImageSource(item, opponent, randomDate)}
                 title={group ? name : opponent.name}
                 subtitle={messages.length ? messages[0].text : ''}
                 time={
@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  userChats: selectUserChats
+  userChats: selectUserChats,
+  randomDate: selectRandomDate
 });
 
 const mapDispatchToProps = dispatch => ({

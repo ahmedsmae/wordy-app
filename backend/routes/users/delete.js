@@ -106,7 +106,21 @@ router.delete(
         text: `User: ${email}\nReason: ${reason}\nDetails: ${details}`
       });
 
-      await user.remove();
+      // delete all user info except user.name
+      delete user.email;
+      delete user.password;
+      delete user.status;
+      delete user.image_uploaded;
+      delete user.avatar;
+      delete user.sign_in_method;
+      delete user.photo_url;
+      delete user.tokens;
+
+      // add prop deleted:true
+      user.deleted = true;
+
+      await user.save();
+
       res.json({ msg: 'User deleted :(' });
     } catch (err) {
       res.status(500).send({ msg: err.message });

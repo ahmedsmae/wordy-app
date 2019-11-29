@@ -7,39 +7,45 @@ import { Appbar, Avatar } from 'react-native-paper';
 import Chatting from './chatting.component';
 
 import { selectCurrentChatId } from '../../redux/chats/chats.selectors';
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getChatIdStart } from '../../redux/chats/chats.actions';
-import { APP_URLS } from '../../redux/utils/urls';
-import { getChatImageSource } from '../../utils/helper-functions';
+import {
+  getChatImageSource,
+  getUserImageSource
+} from '../../utils/helper-functions';
 
-const ChattingContainer = ({ navigation, getChatIdStart, currentChatId }) => {
+const ChattingContainer = ({
+  navigation,
+  getChatIdStart,
+  currentChatId,
+  randomDate
+}) => {
   const chat = navigation.getParam('chat');
   const opponent = navigation.getParam('opponent');
+  const contact = navigation.getParam('contact');
 
-  const { sign_in_method, _id, image_url, name, email } = opponent;
+  const { name, email } = opponent;
 
   if (chat) {
     return (
       <>
         <Appbar.Header>
-          <Appbar.Action
-            icon="arrow-left"
-            onPress={() => navigation.goBack()}
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Avatar.Image
+            size={40}
+            source={getChatImageSource(chat, opponent, randomDate)}
           />
-          {!!getChatImageSource(chat, opponent) && (
-            <Avatar.Image
-              size={40}
-              source={{
-                uri: getChatImageSource(chat, opponent)
-              }}
-            />
-          )}
           <Appbar.Content
             title={chat.group ? chat.name : opponent.name}
             subtitle={chat.group ? chat.status : opponent.email}
           />
         </Appbar.Header>
 
-        <Chatting chatId={chat._id} />
+        <Chatting
+          chatId={chat._id}
+          navigateToContacts={() => navigation.navigate('Contacts')}
+          contact={contact}
+        />
       </>
     );
   }
@@ -48,7 +54,6 @@ const ChattingContainer = ({ navigation, getChatIdStart, currentChatId }) => {
     !chat && !currentChatId && getChatIdStart(opponent._id, err => {});
   });
 
-  // we are coming from the users screen (can not be group chat)
   if (!currentChatId) {
     return (
       <ActivityIndicator
@@ -60,30 +65,27 @@ const ChattingContainer = ({ navigation, getChatIdStart, currentChatId }) => {
     return (
       <>
         <Appbar.Header>
-          <Appbar.Action
-            icon="arrow-left"
-            onPress={() => navigation.goBack()}
-          />
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Avatar.Image
             size={40}
-            source={{
-              uri:
-                sign_in_method === 'EMAIL/PASSWORD'
-                  ? `${APP_URLS.SERVER_USER_AVATAR.url}/${_id}`
-                  : image_url
-            }}
+            source={getUserImageSource(chat, opponent, randomDate)}
           />
           <Appbar.Content title={name} subtitle={email} />
         </Appbar.Header>
 
-        <Chatting chatId={currentChatId} />
+        <Chatting
+          chatId={currentChatId}
+          navigateToContacts={() => navigation.navigate('Contacts')}
+          contact={contact}
+        />
       </>
     );
   }
 };
 
 const mapStateToProps = createStructuredSelector({
-  currentChatId: selectCurrentChatId
+  currentChatId: selectCurrentChatId,
+  randomDate: selectRandomDate
 });
 
 const mapDispatchToProps = dispatch => ({

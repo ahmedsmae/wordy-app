@@ -4,18 +4,23 @@ import { createStructuredSelector } from 'reselect';
 
 import { View, FlatList, Alert } from 'react-native';
 import { Appbar, TextInput, Divider, List, Avatar } from 'react-native-paper';
-import { ImagePicker } from '../../components';
+import ImagePicker from './image-picker.component';
 
 import { selectAllUsers } from '../../redux/users/users.selectors';
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getAllUsersStart } from '../../redux/users/users.actions';
 import { createGroupStart } from '../../redux/chats/chats.actions';
+import { updateRandomDate } from '../../redux/api-utilities/api-utilities.actions';
 import { APP_URLS } from '../../redux/utils/urls';
+import { getUserImageSource } from '../../utils/helper-functions';
 
 const EditGroup = ({
   navigation,
   allUsers,
   getAllUsersStart,
-  createGroupStart
+  createGroupStart,
+  randomDate,
+  updateRandomDate
 }) => {
   const group = navigation.getParam('group');
 
@@ -23,10 +28,9 @@ const EditGroup = ({
   const [groupInfo, setGroupInfo] = useState({
     groupName: group ? group.name : '',
     groupStatus: groupStatus ? group.status : '',
-    // ! server group url
     groupAvatar:
       group && group.image_uploaded
-        ? `${APP_URLS.SERVER_USER_AVATAR}/${group._id}`
+        ? `${APP_URLS.SERVE_CHAT_AVATAR.url}/${group._id}?r=${randomDate}`
         : null
   });
   const [searchQ, setSearchQ] = useState('');
@@ -76,6 +80,7 @@ const EditGroup = ({
         // callback action
         // snackbar if error
 
+        updateRandomDate();
         setDisabled(false);
         navigation.goBack();
       }
@@ -144,55 +149,54 @@ const EditGroup = ({
         data={displayList}
         extraData={groupUsers}
         keyExtractor={({ _id }) => _id}
-        renderItem={({
-          item: { name, email, _id, image_url, sign_in_method }
-        }) => (
-          <>
-            <List.Item
-              title={name}
-              description={email}
-              style={{
-                backgroundColor: groupUsers.includes(_id)
-                  ? 'lightgrey'
-                  : 'white',
-                paddingRight: 20
-              }}
-              left={props => (
-                <Avatar.Image
-                  {...props}
-                  size={50}
-                  source={{
-                    uri:
-                      sign_in_method === 'EMAIL/PASSWORD'
-                        ? `${APP_URLS.SERVER_USER_AVATAR.url}/${_id}`
-                        : image_url
-                  }}
-                />
-              )}
-              onPress={() => {
-                if (groupUsers.includes(_id)) {
-                  setGroupUsers(prev => prev.filter(id => id !== _id));
-                } else {
-                  setGroupUsers(prev => prev.concat(_id));
-                }
-              }}
-            />
-            <Divider />
-          </>
-        )}
+        renderItem={({ item }) => {
+          const { name, email, _id } = item;
+
+          return (
+            <>
+              <List.Item
+                title={name}
+                description={email}
+                style={{
+                  backgroundColor: groupUsers.includes(_id)
+                    ? 'lightgrey'
+                    : 'white',
+                  paddingRight: 20
+                }}
+                left={props => (
+                  <Avatar.Image
+                    {...props}
+                    size={50}
+                    source={getUserImageSource(item, randomDate)}
+                  />
+                )}
+                onPress={() => {
+                  if (groupUsers.includes(_id)) {
+                    setGroupUsers(prev => prev.filter(id => id !== _id));
+                  } else {
+                    setGroupUsers(prev => prev.concat(_id));
+                  }
+                }}
+              />
+              <Divider />
+            </>
+          );
+        }}
       />
     </>
   );
 };
 
 const mapStateToProps = createStructuredSelector({
-  allUsers: selectAllUsers
+  allUsers: selectAllUsers,
+  randomDate: selectRandomDate
 });
 
 const mapDispatchToProps = dispatch => ({
   getAllUsersStart: callback => dispatch(getAllUsersStart(callback)),
   createGroupStart: (groupData, callback) =>
-    dispatch(createGroupStart(groupData, callback))
+    dispatch(createGroupStart(groupData, callback)),
+  updateRandomDate: () => dispatch(updateRandomDate())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditGroup);

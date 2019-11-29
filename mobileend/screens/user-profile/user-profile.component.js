@@ -1,36 +1,35 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import {
-  View,
-  Image,
-  ScrollView,
-  Dimensions,
-  KeyboardAvoidingView
-} from 'react-native';
-import { Appbar, List, IconButton, Portal, Divider } from 'react-native-paper';
-
-const { width } = Dimensions.get('window');
+import { ScrollView, KeyboardAvoidingView } from 'react-native';
+import { Appbar, List, Portal, Divider } from 'react-native-paper';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
-import {} from '../../redux/current-user/current-user.actions';
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
+import { updateRandomDate } from '../../redux/api-utilities/api-utilities.actions';
+import {
+  updateUserAvatarStart,
+  updateUserInfoStart
+} from '../../redux/current-user/current-user.actions';
 
 import EditDialog from './edit-dialog.component';
+import ImagePicker from './image-picker.component';
 
-import { APP_URLS } from '../../redux/utils/urls';
-
-const UserProfile = ({ navigation, currentUser }) => {
-  const { _id, sign_in_method, image_url, email } = currentUser;
+const UserProfile = ({
+  navigation,
+  currentUser,
+  updateUserAvatarStart,
+  updateUserInfoStart,
+  randomDate,
+  updateRandomDate
+}) => {
+  const { _id, sign_in_method, image_url, email, image_uploaded } = currentUser;
 
   const [name, setName] = useState(currentUser.name || '');
   const [status, setStatus] = useState(currentUser.status || '');
 
   const [editingName, setEditingName] = useState(false);
   const [editingStatus, setEditingStatus] = useState(false);
-
-  const _handlePhotoChange = () => {
-    // action
-  };
 
   return (
     <>
@@ -44,35 +43,17 @@ const UserProfile = ({ navigation, currentUser }) => {
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{ flex: 1 }}
         >
-          <View style={{ alignItems: 'center' }}>
-            <Image
-              style={{ width: 150, height: 150, borderRadius: 75, margin: 20 }}
-              source={{
-                uri:
-                  sign_in_method === 'EMAIL/PASSWORD'
-                    ? `${APP_URLS.SERVER_USER_AVATAR.url}/${_id}`
-                    : image_url
-              }}
-            />
-
-            <IconButton
-              size={25}
-              icon="camera"
-              color="white"
-              style={{
-                width: 45,
-                height: 45,
-                borderRadius: 23,
-                backgroundColor: 'tomato',
-                padding: 10,
-                position: 'absolute',
-                bottom: 20,
-                right: width / 2 - 85,
-                elevation: 3
-              }}
-              onPress={_handlePhotoChange}
-            />
-          </View>
+          <ImagePicker
+            currentUser={currentUser}
+            randomDate={randomDate}
+            onImageTaken={image =>
+              updateUserAvatarStart(image, err => {
+                if (err) {
+                }
+                updateRandomDate();
+              })
+            }
+          />
 
           <List.Item
             style={{
@@ -131,6 +112,7 @@ const UserProfile = ({ navigation, currentUser }) => {
               onChangeText={text => setName(text)}
               onSave={() => {
                 setEditingName(false);
+                updateUserInfoStart({ name, status }, err => {});
               }}
             />
 
@@ -142,6 +124,7 @@ const UserProfile = ({ navigation, currentUser }) => {
               onChangeText={text => setStatus(text)}
               onSave={() => {
                 setEditingStatus(false);
+                updateUserInfoStart({ name, status }, err => {});
               }}
             />
           </Portal>
@@ -152,9 +135,16 @@ const UserProfile = ({ navigation, currentUser }) => {
 };
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  randomDate: selectRandomDate
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  updateUserAvatarStart: (avatar, callback) =>
+    dispatch(updateUserAvatarStart(avatar, callback)),
+  updateUserInfoStart: (userInfo, callback) =>
+    dispatch(updateUserInfoStart(userInfo, callback)),
+  updateRandomDate: () => dispatch(updateRandomDate())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);

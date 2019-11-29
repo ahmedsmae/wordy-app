@@ -108,7 +108,10 @@ router.get('/avatar/:userid', async (req, res) => {
  */
 router.get('/allusers', auth, async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: req.user._id } });
+    const users = await User.find({
+      _id: { $ne: req.user._id },
+      deleted: { $exists: false }
+    });
 
     res.json({ users });
   } catch (err) {

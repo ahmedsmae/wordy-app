@@ -87,6 +87,13 @@ const SignIn = ({ navigation, signInUserStart }) => {
         >
           Don't have account ? Create One...
         </Paragraph>
+
+        <Paragraph
+          style={{ marginTop: 30, color: 'teal' }}
+          onPress={() => navigation.navigate('ForgetPassword')}
+        >
+          Forget Account Password ? Retrieve...
+        </Paragraph>
       </ScrollView>
 
       <Snackbar
