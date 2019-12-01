@@ -6,8 +6,7 @@
   "scripts": {
     "server": "npm start --prefix backend",
     "mobile": "npm start --prefix mobileend",
-    "dev": "concurrently \"npm run server\" \"npm run mobile\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
+    "dev": "concurrently \"npm run server\" \"npm run mobile\""
   },
   "keywords": [
     "chat",

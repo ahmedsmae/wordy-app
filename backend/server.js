@@ -24,15 +24,15 @@ middleware(app);
 routes(app);
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
+  app.use(express.static('frontend'));
 
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, '..', 'frontend', 'index.html'));
   });
 
-  app.get('/service-worker.js', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'build', 'service-worker.js'));
-  });
+  // app.get('/service-worker.js', (req, res) => {
+  //   res.sendFile(path.resolve(__dirname, '..', 'build', 'service-worker.js'));
+  // });
 }
 
 const expressServer = app.listen(process.env.PORT, () =>
