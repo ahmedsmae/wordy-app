@@ -7,7 +7,7 @@
     "server": "npm start --prefix backend",
     "mobile": "npm start --prefix mobileend",
     "dev": "concurrently \"npm run server\" \"npm run mobile\"",
-    "start": "npm start --prefix backend"
+    "start": "node backend/server.js"
   },
   "keywords": [
     "chat",
