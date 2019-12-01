@@ -23,17 +23,11 @@ app.use('/uploads', express.static('uploads'));
 middleware(app);
 routes(app);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('frontend'));
+app.use(express.static('frontend'));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'frontend', 'index.html'));
-  });
-
-  // app.get('/service-worker.js', (req, res) => {
-  //   res.sendFile(path.resolve(__dirname, '..', 'build', 'service-worker.js'));
-  // });
-}
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'frontend', 'index.html'));
+});
 
 const expressServer = app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)

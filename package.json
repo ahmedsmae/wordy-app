@@ -6,7 +6,8 @@
   "scripts": {
     "server": "npm start --prefix backend",
     "mobile": "npm start --prefix mobileend",
-    "dev": "concurrently \"npm run server\" \"npm run mobile\""
+    "dev": "concurrently \"npm run server\" \"npm run mobile\"",
+    "start": "node /backend/server.js"
   },
   "keywords": [
     "chat",
