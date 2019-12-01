@@ -9,6 +9,7 @@ import { selectRandomDate } from '../../redux/api-utilities/api-utilities.select
 import { signoutUserStart } from '../../redux/current-user/current-user.actions';
 
 import { getUserImageSource } from '../../utils/helper-functions';
+import Colors from '../../utils/colors';
 
 const Settings = ({
   navigation,
@@ -45,7 +46,9 @@ const Settings = ({
         style={{ paddingLeft: 25, paddingVertical: 10 }}
         title="Sign Out"
         description="Item description"
-        left={props => <List.Icon {...props} icon="exit-to-app" color="teal" />}
+        left={props => (
+          <List.Icon {...props} icon="exit-to-app" color={Colors.PRIMARY} />
+        )}
         onPress={() => signoutUserStart(err => {})}
       />
 
@@ -55,7 +58,7 @@ const Settings = ({
           title="Change Password"
           description="Item description"
           left={props => (
-            <List.Icon {...props} icon="find-replace" color="teal" />
+            <List.Icon {...props} icon="find-replace" color={Colors.PRIMARY} />
           )}
           onPress={() => navigation.navigate('ChangePassword')}
         />
@@ -66,7 +69,7 @@ const Settings = ({
         title="Contact Us"
         description="Item description"
         left={props => (
-          <List.Icon {...props} icon="contact-mail" color="teal" />
+          <List.Icon {...props} icon="contact-mail" color={Colors.PRIMARY} />
         )}
         onPress={() => navigation.navigate('ContactUs')}
       />
@@ -76,7 +79,11 @@ const Settings = ({
         title="User Agreement"
         description="Item description"
         left={props => (
-          <List.Icon {...props} icon="thumb-up-outline" color="teal" />
+          <List.Icon
+            {...props}
+            icon="thumb-up-outline"
+            color={Colors.PRIMARY}
+          />
         )}
         onPress={() => navigation.navigate('UserAgreement')}
       />
@@ -86,7 +93,11 @@ const Settings = ({
         title="About"
         description="Item description"
         left={props => (
-          <List.Icon {...props} icon="information-outline" color="teal" />
+          <List.Icon
+            {...props}
+            icon="information-outline"
+            color={Colors.PRIMARY}
+          />
         )}
         onPress={() => navigation.navigate('About')}
       />
@@ -96,7 +107,11 @@ const Settings = ({
         title="Delete User"
         description="Item description"
         left={props => (
-          <List.Icon {...props} icon="account-remove-outline" color="teal" />
+          <List.Icon
+            {...props}
+            icon="account-remove-outline"
+            color={Colors.PRIMARY}
+          />
         )}
         onPress={() => navigation.navigate('DeleteUser')}
       />

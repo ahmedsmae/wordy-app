@@ -14,6 +14,7 @@ import {
 
 import EditDialog from './edit-dialog.component';
 import ImagePicker from './image-picker.component';
+import Colors from '../../utils/colors';
 
 const UserProfile = ({
   navigation,
@@ -66,7 +67,9 @@ const UserProfile = ({
             descriptionStyle={{ fontSize: 16, color: 'black' }}
             title="Name"
             description={name}
-            left={props => <List.Icon {...props} icon="account" color="teal" />}
+            left={props => (
+              <List.Icon {...props} icon="account" color={Colors.PRIMARY} />
+            )}
             right={props => (
               <List.Icon {...props} icon="pencil" color="lightgrey" />
             )}
@@ -82,7 +85,11 @@ const UserProfile = ({
             title="Status"
             description={status}
             left={props => (
-              <List.Icon {...props} icon="message-text-outline" color="teal" />
+              <List.Icon
+                {...props}
+                icon="message-text-outline"
+                color={Colors.PRIMARY}
+              />
             )}
             right={props => (
               <List.Icon {...props} icon="pencil" color="lightgrey" />
@@ -99,7 +106,11 @@ const UserProfile = ({
             title="Email"
             description={email}
             left={props => (
-              <List.Icon {...props} icon="email-outline" color="teal" />
+              <List.Icon
+                {...props}
+                icon="email-outline"
+                color={Colors.PRIMARY}
+              />
             )}
           />
 

@@ -6,3 +6,8 @@ export const selectAllUsers = createSelector(
   [selectUsers],
   users => users.allUsers
 );
+
+export const selectLoading = createSelector(
+  [selectUsers],
+  users => users.loading
+);

@@ -6,23 +6,27 @@ export const getChatImageSource = (chat, opponent, randomDate) => {
   const { _id, image_uploaded, sign_in_method, image_url } = opponent;
 
   switch (true) {
-    case chat.group && chat.image_uploaded:
+    case chat && chat.group && chat.image_uploaded:
       return {
         uri: `${APP_URLS.SERVE_CHAT_AVATAR.url}/${chat._id}?r=${randomDate}`
       };
 
-    case chat.group && !chat.image_uploaded:
+    case chat && chat.group && !chat.image_uploaded:
       return groupBlankImage;
 
-    case !chat.group && image_uploaded:
+    case (!chat || !chat.group) && image_uploaded:
       return {
         uri: `${APP_URLS.SERVE_USER_AVATAR.url}/${_id}?r=${randomDate}`
       };
 
-    case !chat.group && !image_uploaded && sign_in_method === 'EMAIL/PASSWORD':
+    case (!chat || !chat.group) &&
+      !image_uploaded &&
+      sign_in_method === 'EMAIL/PASSWORD':
       return userBlankImage;
 
-    case !chat.group && !image_uploaded && sign_in_method !== 'EMAIL/PASSWORD':
+    case (!chat || !chat.group) &&
+      !image_uploaded &&
+      sign_in_method !== 'EMAIL/PASSWORD':
       return { uri: image_url };
 
     default:
@@ -44,8 +48,30 @@ export const getUserImageSource = (user, randomDate) => {
   } else if (sign_in_method === 'EMAIL/PASSWORD') {
     imageSource = userBlankImage;
   } else {
-    imageSource = image_url;
+    imageSource = { uri: image_url };
   }
 
   return imageSource;
+};
+
+export const calcDesiredWidthHeight = (
+  originalWidth,
+  originalHeight,
+  maxWidth,
+  maxHeight
+) => {
+  let desiredWidth, desiredHeight;
+
+  if (originalWidth > maxWidth) {
+    desiredWidth = maxWidth;
+    desiredHeight = (originalHeight * maxWidth) / originalWidth;
+  } else if (originalHeight > maxHeight) {
+    desiredHeight = maxHeight;
+    desiredWidth = (originalWidth * maxHeight) / originalHeight;
+  } else {
+    desiredWidth = originalWidth;
+    desiredHeight = originalHeight;
+  }
+
+  return { width: desiredWidth, height: desiredHeight };
 };

@@ -69,6 +69,11 @@ export const APP_URLS = {
     method: 'GET',
     url: `${BASE_URL}/api/chats/avatar`
   },
+  SERVE_MESSAGE_IMAGE: messageId => `${BASE_URL}/uploads/${messageId}.jpg`,
+  UPLOAD_MESSAGE_IMAGE: {
+    method: 'POST',
+    url: `${BASE_URL}/api/chats/messages` // + /:chatid/:messageid
+  },
   EDIT_USER_INFO: userInfo => ({
     method: 'PATCH',
     url: `${BASE_URL}/api/users/updateinfo`,

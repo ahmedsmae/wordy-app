@@ -2,8 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import moment from 'moment';
-import { StyleSheet, FlatList } from 'react-native';
-import { Appbar, FAB, Provider, Menu, Divider } from 'react-native-paper';
+import { StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import {
+  Appbar,
+  FAB,
+  Provider,
+  Menu,
+  Divider,
+  Searchbar
+} from 'react-native-paper';
 import { PlaceholderParagraph, ListItem } from '../../components';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
@@ -11,6 +18,8 @@ import { selectUserChats } from '../../redux/chats/chats.selectors';
 import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getAllUserChatsStart } from '../../redux/chats/chats.actions';
 import { getChatImageSource, getOpponent } from '../../utils/helper-functions';
+
+import Colors from '../../utils/colors';
 
 const Chats = ({
   navigation,
@@ -20,6 +29,8 @@ const Chats = ({
   randomDate
 }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const [searchMode, setSearchMode] = useState(false);
+  const [searchQ, setSearchQ] = useState('');
 
   useEffect(() => {
     getAllUserChatsStart(err => {});
@@ -29,11 +40,51 @@ const Chats = ({
     navigation.navigate('Chatting', { chat, opponent });
   };
 
+  const displayList = userChats.filter(({ group, name, opponents }) => {
+    const chatName = group
+      ? name
+      : getOpponent(opponents, currentUser._id).name;
+    return chatName.toLowerCase().includes(searchQ.toLowerCase());
+  });
+
+  // if (!userChats.length) {
+  //   return (
+  //     <>
+  //       <Appbar.Header style={{ backgroundColor: 'teal' }}>
+  //         <Appbar.Content title="WordyApp" />
+  //       </Appbar.Header>
+
+  //       <ActivityIndicator style={{ flex: 1 }} size="large" />
+  //     </>
+  //   );
+  // }
+
   return (
     <Provider>
-      <Appbar.Header style={{ backgroundColor: 'teal' }}>
-        <Appbar.Content title="WordyApp" />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
+      <Appbar.Header style={{ backgroundColor: Colors.PRIMARY }}>
+        {searchMode ? (
+          <Searchbar
+            placeholder="Search chat..."
+            value={searchQ}
+            autoFocus
+            clearButtonMode="always"
+            onChangeText={text => {
+              setSearchQ(text);
+              if (text.length === 0) {
+                setSearchMode(false);
+              }
+            }}
+          />
+        ) : (
+          <>
+            <Appbar.Content title="WordyApp" />
+            <Appbar.Action
+              icon="magnify"
+              color="white"
+              onPress={() => setSearchMode(true)}
+            />
+          </>
+        )}
 
         <Menu
           visible={showMenu}
@@ -79,8 +130,8 @@ const Chats = ({
       ) : (
         <FlatList
           style={{ flex: 1 }}
-          data={userChats}
-          keyExtractor={({ _id }) => _id}
+          data={displayList}
+          keyExtractor={({ _id }) => String(_id)}
           renderItem={({ item }) => {
             const { _id, opponents, messages, group, name } = item;
             const opponent = getOpponent(opponents, currentUser._id);
@@ -122,7 +173,7 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: 'tomato'
+    backgroundColor: Colors.ACCENT
   }
 });
 

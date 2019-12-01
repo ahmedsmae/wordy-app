@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { APP_URLS } from '../utils/urls';
 import setAuthToken from '../utils/set-auth-token';
-import { createImageAndDataFD } from '../utils/create-form-data';
+import { createImageAndDataFD, createImageFD } from '../utils/create-form-data';
 
 import ChatsActionTypes from './chats.types';
 import {
@@ -12,7 +12,9 @@ import {
   getChatIdSuccess,
   getChatIdFailure,
   createGroupSuccess,
-  createGroupFailure
+  createGroupFailure,
+  uploadMessageImageSuccess,
+  uploadMessageImageFailure
 } from './chats.actions';
 
 function* getAllUserChatsAsync({ callback }) {
@@ -68,6 +70,32 @@ function* createGroupAsync({ payload: { avatar, ...otherProps }, callback }) {
   }
 }
 
+function* uploadMessageImageAsync({
+  payload: { image, chatId, messageId },
+  callback
+}) {
+  try {
+    yield setAuthToken();
+
+    const formData = createImageFD('image', image);
+
+    yield call(
+      axios.post,
+      `${APP_URLS.UPLOAD_MESSAGE_IMAGE.url}/${chatId}/${messageId}`,
+      formData
+    );
+
+    yield call(callback);
+    yield put(uploadMessageImageSuccess());
+  } catch (err) {
+    console.log(err);
+
+    yield call(callback, err);
+    yield put(uploadMessageImageFailure(err.message));
+    console.log('uploadMessageImageAsync', err.response);
+  }
+}
+
 function* getAllUserChatsStart() {
   yield takeLatest(
     ChatsActionTypes.GET_ALL_USER_CHATS_START,
@@ -83,10 +111,18 @@ function* createGroupStart() {
   yield takeLatest(ChatsActionTypes.CREATE_GROUP_START, createGroupAsync);
 }
 
+function* uploadMessageImageStart() {
+  yield takeLatest(
+    ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_START,
+    uploadMessageImageAsync
+  );
+}
+
 export default function* chatsSagas() {
   yield all([
     call(getAllUserChatsStart),
     call(getChatIdStart),
-    call(createGroupStart)
+    call(createGroupStart),
+    call(uploadMessageImageStart)
   ]);
 }

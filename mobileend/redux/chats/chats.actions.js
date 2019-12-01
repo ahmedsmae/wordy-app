@@ -49,3 +49,24 @@ export const createGroupFailure = errorMessage => ({
   type: ChatsActionTypes.CREATE_GROUP_FAILURE,
   payload: errorMessage
 });
+
+// UPLOAD MESSAGE IMAGE
+export const uploadMessageImageStart = (
+  chatId,
+  messageId,
+  image,
+  callback
+) => ({
+  type: ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_START,
+  payload: { chatId, messageId, image },
+  callback
+});
+
+export const uploadMessageImageSuccess = () => ({
+  type: ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_SUCCESS
+});
+
+export const uploadMessageImageFailure = errorMessage => ({
+  type: ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_FAILURE,
+  payload: errorMessage
+});

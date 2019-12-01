@@ -3,6 +3,7 @@ const sharp = require('sharp');
 const router = express.Router();
 const auth = require('../utils/auth');
 const upload = require('../utils/upload');
+const uploadFiles = require('../utils/upload-files');
 
 const User = require('../../models/user');
 const Chat = require('../../models/chat');
@@ -62,6 +63,45 @@ router.patch(
     } catch (err) {
       console.error(err.message);
       res.status(500).json({ errors: [{ msg: err.message }] });
+    }
+  }
+);
+
+/**
+ * @method - POST
+ * @url - '/api/chats/messages/:chatid/:messageid'
+ * @data - image file
+ * @action - upload image to the server (as a file)
+ * @access - private
+ */
+router.post(
+  '/messages/:chatid/:messageid',
+  auth,
+  uploadFiles.single('image'),
+  async (req, res) => {
+    try {
+      const chat = await Chat.findById(req.params.chatid);
+
+      if (!chat) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Chat does not exists' }] });
+      }
+
+      const message = chat.messages.find(
+        ({ _id }) => _id.toString() === req.params.messageid
+      );
+
+      if (!message) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Message does not exists' }] });
+      }
+
+      res.json({ msg: 'Image uploaded seccessfully' });
+    } catch (err) {
+      console.error(err.message);
+      res.status(400).json({ errors: [{ msg: err.message }] });
     }
   }
 );

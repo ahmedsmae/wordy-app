@@ -67,7 +67,7 @@ router.get('/getchatid/:opponentid', auth, async (req, res) => {
     let chat = await Chat.findOne({
       // should contain only these 2 users ( Not more than this ) order doesn't matter
       opponents: { $size: 2, $all: [user._id, req.params.opponentid] }
-    }).populate('opponents');
+    });
 
     if (!chat) {
       console.log('creating new chat');

@@ -2,16 +2,39 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import Attach from './attach.component';
+import * as ImagePicker from 'expo-image-picker';
+
+import { verifyCameraPermissions } from '../../utils/verify-permissions';
+
+import Colors from '../../utils/colors';
 
 const InputSubmit = ({
   text,
   onChangeText,
-  onSend,
+  onSendText,
   onImageFromCamera,
   onImageFromGallery,
-  navigateToContacts
+  navigateToContacts,
+  onGetLocation
 }) => {
   const [showAttach, setShowAttach] = useState(false);
+
+  const _handleGetImage = async () => {
+    const hasPermission = await verifyCameraPermissions();
+    if (!hasPermission) return;
+
+    const options = {
+      allowsEditing: true,
+      quality: 1,
+      allowsMultipleSelection: false
+    };
+
+    const image = await ImagePicker.launchCameraAsync(options);
+
+    if (!image.cancelled) {
+      onImageFromCamera(image);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -21,6 +44,7 @@ const InputSubmit = ({
           onImageFromCamera={onImageFromCamera}
           onImageFromGallery={onImageFromGallery}
           navigateToContacts={navigateToContacts}
+          onGetLocation={onGetLocation}
         />
       )}
 
@@ -44,13 +68,21 @@ const InputSubmit = ({
           size={30}
           onPress={() => setShowAttach(prev => !prev)}
         />
+
+        <IconButton
+          style={styles.camera}
+          color="grey"
+          icon="camera"
+          size={25}
+          onPress={_handleGetImage}
+        />
       </View>
       <IconButton
         style={styles.send}
         color="white"
         icon="send"
         size={23}
-        onPress={onSend}
+        onPress={onSendText}
       />
     </View>
   );
@@ -69,7 +101,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 17,
-    backgroundColor: 'white',
+    backgroundColor: Colors.LIGHT,
     marginLeft: 5,
     minHeight: 50,
     paddingLeft: 15,
@@ -84,15 +116,26 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     elevation: 1
   },
+  camera: {
+    position: 'absolute',
+    right: 0,
+    width: 40,
+    height: 40,
+    bottom: 3,
+    elevation: 1,
+    padding: 4
+  },
   attach: {
     position: 'absolute',
-    right: -3,
-    bottom: 1,
+    right: 40,
+    bottom: 3,
+    width: 40,
+    height: 40,
     elevation: 1,
     transform: [{ rotate: '-120deg' }]
   },
   send: {
-    backgroundColor: '#0b8f14',
+    backgroundColor: Colors.ACCENT,
     padding: 4,
     width: 50,
     height: 50,

@@ -31,9 +31,9 @@ export const createImageFD = (imageType, image) => {
   let data = new FormData();
   data.append(imageType, {
     uri,
-    name: name ? name : imageType + '.png',
-    filename: filename ? filename : imageType + '.png',
-    type: 'image/png'
+    name: name ? name : imageType + '.jpg',
+    filename: filename ? filename : imageType + '.jpg',
+    type: 'image/jpg'
   });
   data.append('Content-Type', 'image/png');
 

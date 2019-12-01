@@ -44,8 +44,16 @@ router.post('/creategroup', auth, upload.single('avatar'), async (req, res) => {
 
     const userChats = await Chat.find(
       { opponents: user._id },
-      { opponents: 1, createdAt: 1, lastUpdated: 1, messages: { $slice: -1 } }
-    ).populate('opponents');
+      {
+        opponents: 1,
+        createdAt: 1,
+        lastUpdated: 1,
+        messages: { $slice: -1 },
+        admin: 1
+      }
+    )
+      .populate('opponents', '-tokens')
+      .populate('admin', '-tokens');
 
     res.json({ userChats });
   } catch (err) {

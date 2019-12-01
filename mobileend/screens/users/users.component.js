@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { StyleSheet, FlatList } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { StyleSheet, FlatList, View } from 'react-native';
+import { Appbar, Searchbar } from 'react-native-paper';
 import { PlaceholderParagraph, ListItem } from '../../components';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
@@ -13,6 +13,9 @@ import { getAllUsersStart } from '../../redux/users/users.actions';
 import { getUserImageSource } from '../../utils/helper-functions';
 
 const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
+  const [searchMode, setSearchMode] = useState(false);
+  const [searchQ, setSearchQ] = useState('');
+
   useEffect(() => {
     getAllUsersStart(err => {});
   }, []);
@@ -21,12 +24,41 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
     navigation.navigate('Chatting', { opponent });
   };
 
+  const displayList = allUsers.filter(({ name }) =>
+    name.toLowerCase().includes(searchQ.toLowerCase())
+  );
+
   return (
     <>
       <Appbar.Header>
-        <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Users" />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
+        {searchMode ? (
+          <Searchbar
+            placeholder="Search username..."
+            value={searchQ}
+            autoFocus
+            clearButtonMode="always"
+            onChangeText={text => {
+              setSearchQ(text);
+              if (text.length === 0) {
+                setSearchMode(false);
+              }
+            }}
+          />
+        ) : (
+          <>
+            <Appbar.Action
+              icon="arrow-left"
+              color="white"
+              onPress={() => navigation.goBack()}
+            />
+            <Appbar.Content title="Users" />
+            <Appbar.Action
+              icon="magnify"
+              color="white"
+              onPress={() => setSearchMode(true)}
+            />
+          </>
+        )}
       </Appbar.Header>
 
       {allUsers.length === 0 ? (
@@ -37,8 +69,8 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
       ) : (
         <FlatList
           style={{ flex: 1 }}
-          data={allUsers}
-          keyExtractor={({ _id }) => _id}
+          data={displayList}
+          keyExtractor={({ _id }) => String(_id)}
           renderItem={({ item }) => {
             const { name, status } = item;
 

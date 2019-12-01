@@ -1,6 +1,8 @@
 const sio = require('socket.io');
 const Chat = require('../models/chat');
 const Message = require('../models/message');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = function(expressServer) {
   const io = sio(expressServer);
@@ -21,7 +23,13 @@ module.exports = function(expressServer) {
       .in(chatId)
       .on('new_message_from_client', async ({ owner, text }, callback) => {
         try {
-          const message = new Message({ owner, text }).toObject();
+          const message = new Message({
+            owner,
+            type: 'TEXT',
+            text,
+            has_attachment: false,
+            attachment: null
+          }).toObject();
           await Chat.updateOne(
             { _id: chatId },
             { $push: { messages: message } }
@@ -32,6 +40,62 @@ module.exports = function(expressServer) {
 
           callback();
         } catch (err) {
+          callback(err);
+        }
+      });
+
+    socket
+      .in(chatId)
+      .on(
+        'new_location_message_from_client',
+        async ({ location, owner }, callback) => {
+          try {
+            const message = new Message({
+              owner,
+              type: 'LOCATION',
+              text: '',
+              has_attachment: true,
+              attachment: { location }
+            }).toObject();
+
+            await Chat.updateOne(
+              { _id: chatId },
+              { $push: { messages: message } }
+            );
+
+            // Send to all users in chatId room only
+            io.to(chatId).emit('new_message_from_server', message);
+
+            callback();
+          } catch (err) {
+            console.log(err);
+            callback(err);
+          }
+        }
+      );
+
+    socket
+      .in(chatId)
+      .on('new_image_message_from_client', async ({ owner }, callback) => {
+        const message = new Message({
+          owner,
+          type: 'IMAGE',
+          text: '',
+          has_attachment: true,
+          attachment: {}
+        }).toObject();
+
+        try {
+          await Chat.updateOne(
+            { _id: chatId },
+            { $push: { messages: message } }
+          );
+
+          io.to(chatId).emit('new_message_from_server', message);
+
+          callback(message._id.toString());
+        } catch (err) {
+          console.log(null, err);
           callback(err);
         }
       });

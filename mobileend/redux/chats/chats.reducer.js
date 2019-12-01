@@ -11,6 +11,7 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
   switch (type) {
     case ChatsActionTypes.GET_ALL_USER_CHATS_START:
     case ChatsActionTypes.CREATE_GROUP_START:
+    case ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_START:
       return {
         ...state,
         loading: true,
@@ -42,6 +43,13 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
         errorMessage: ''
       };
 
+    case ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        errorMessage: ''
+      };
+
     case ChatsActionTypes.GET_ALL_USER_CHATS_FAILURE:
       return {
         ...state,
@@ -51,6 +59,7 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
       };
 
     case ChatsActionTypes.CREATE_GROUP_FAILURE:
+    case ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_FAILURE:
       return {
         ...state,
         loading: false,

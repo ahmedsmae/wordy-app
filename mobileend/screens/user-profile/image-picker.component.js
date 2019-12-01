@@ -4,6 +4,7 @@ import { IconButton } from 'react-native-paper';
 import { CameraOrMemory } from '../../components';
 
 import { getUserImageSource } from '../../utils/helper-functions';
+import Colors from '../../utils/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -34,7 +35,7 @@ const ImgPicker = ({ onImageTaken, currentUser, randomDate }) => {
             width: 45,
             height: 45,
             borderRadius: 23,
-            backgroundColor: 'tomato',
+            backgroundColor: Colors.ACCENT,
             padding: 10,
             position: 'absolute',
             bottom: 20,

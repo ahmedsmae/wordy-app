@@ -1,17 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import moment from 'moment';
-import { View, Dimensions } from 'react-native';
+import {
+  View,
+  Dimensions,
+  Image,
+  Linking,
+  Platform,
+  TouchableOpacity,
+  Clipboard,
+  ToastAndroid
+} from 'react-native';
 import { Paragraph, IconButton, Surface } from 'react-native-paper';
 
+import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
+
+import { APP_URLS } from '../../redux/utils/urls';
+import Colors from '../../utils/colors';
 const { width } = Dimensions.get('window');
 
 const MessageCard = ({
-  message: { text, owner, createdAt, seen, recieved },
+  message: {
+    _id,
+    text,
+    type,
+    has_attachment,
+    attachment,
+    owner,
+    createdAt,
+    seen,
+    recieved
+  },
   userId,
   index,
   messages,
   opponents,
-  group
+  group,
+  randomDate
 }) => {
   const mySms = owner === userId;
   const sameUser = index > 0 && owner === messages[index - 1].owner;
@@ -20,6 +46,35 @@ const MessageCard = ({
   const prevSms = index > 0 && messages[index - 1];
   const sameDate =
     moment(createdAt).format('LL') === moment(prevSms.createdAt).format('LL');
+
+  const GOOGLE_API_KEY = 'AIzaSyAfmwc7pFxDsiBhJLomE0aZV4oDPeCShY8';
+
+  let locationThumbnail;
+  if (attachment && attachment.location) {
+    const { lat, lng } = attachment.location;
+    locationThumbnail = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=16&size=200x300&maptype=roadmap&markers=color:red%7Clabel:A%7C${lat},${lng}&key=${GOOGLE_API_KEY}`;
+  }
+
+  const [address, setAddress] = useState('');
+
+  useEffect(() => {
+    const getAddress = async () => {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${attachment.location.lat},${attachment.location.lng}&key=${GOOGLE_API_KEY}`
+      );
+      if (!response.ok) throw new Error('Something went wrong!');
+      const resData = await response.json();
+      if (!resData.results) throw new Error('Something went wrong!');
+      setAddress(resData.results[0].formatted_address);
+    };
+
+    if (type === 'LOCATION') getAddress();
+  }, []);
+
+  const _handleOpenGps = () => {
+    const { lat, lng } = attachment.location;
+    Linking.openURL(`${Platform.OS === 'ios' ? 'maps' : 'geo'}:${lat},${lng}`);
+  };
 
   return (
     <>
@@ -60,6 +115,7 @@ const MessageCard = ({
           flexWrap: 'wrap',
           flexDirection: 'row',
           margin: 1,
+          marginHorizontal: 10,
           marginTop: sameUser ? 1 : 10,
           marginBottom: lastSms ? 5 : null
         }}
@@ -67,8 +123,8 @@ const MessageCard = ({
         <Surface
           style={{
             marginLeft: mySms ? 'auto' : null,
-            backgroundColor: mySms ? '#d4ffc4' : 'white',
-            paddingHorizontal: 10,
+            backgroundColor: mySms ? Colors.FADE_PRIMARY : Colors.LIGHT,
+            paddingHorizontal: type === 'LOCATION' ? 5 : 10,
             paddingVertical: 4,
             borderTopLeftRadius: !sameUser && !mySms ? 0 : 7,
             borderTopRightRadius: !sameUser && mySms ? 0 : 7,
@@ -82,7 +138,7 @@ const MessageCard = ({
             <Paragraph
               style={{
                 fontSize: 13,
-                color: '#ff9b94',
+                color: Colors.FADE_ACCENT,
                 fontWeight: 'bold',
                 lineHeight: 14
               }}
@@ -91,20 +147,80 @@ const MessageCard = ({
             </Paragraph>
           )}
 
-          <Paragraph
-            style={{
-              fontSize: 16,
-              lineHeight: 20,
-              marginRight: mySms ? 80 : 60
-            }}
-          >
-            {text}
-          </Paragraph>
+          {type === 'TEXT' && (
+            <Paragraph
+              onLongPress={() => {
+                Clipboard.setString(text);
+                ToastAndroid.show('Text Copied', ToastAndroid.SHORT);
+              }}
+              style={{
+                fontSize: 16,
+                lineHeight: 20,
+                marginRight: mySms ? 80 : 60
+              }}
+            >
+              {text}
+            </Paragraph>
+          )}
+
+          {type === 'LOCATION' && (
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={_handleOpenGps}
+              style={{ flexDirection: 'row' }}
+            >
+              <Image
+                source={{ uri: locationThumbnail }}
+                style={{
+                  width: 150,
+                  height: 100,
+                  marginRight: 5,
+                  borderRadius: 5
+                }}
+              />
+              <Paragraph
+                style={{
+                  width: width * 0.8 - 170,
+                  fontSize: 14,
+                  marginHorizontal: 5,
+                  marginTop: 5,
+                  lineHeight: 18
+                }}
+                numberOfLines={4}
+              >
+                {address}
+              </Paragraph>
+            </TouchableOpacity>
+          )}
+
+          {type === 'IMAGE' && (
+            <TouchableOpacity
+              style={{
+                width: 200,
+                height: 200,
+                marginHorizontal: -5,
+                marginBottom: 20
+              }}
+              activeOpacity={1}
+              onPress={() => {}}
+            >
+              <Image
+                source={{
+                  uri: `${APP_URLS.SERVE_MESSAGE_IMAGE(_id)}?r=${randomDate}`
+                }}
+                style={{
+                  width: 200,
+                  height: 200,
+                  borderRadius: 5
+                }}
+              />
+            </TouchableOpacity>
+          )}
 
           <Paragraph
             style={{
               fontSize: 12,
-              color: '#8d918c',
+              color: Colors.MEDIUM,
               position: 'absolute',
               bottom: 0,
               right: mySms ? 30 : 10
@@ -148,4 +264,8 @@ const MessageCard = ({
   );
 };
 
-export default MessageCard;
+const mapStateToProps = createStructuredSelector({
+  randomDate: selectRandomDate
+});
+
+export default connect(mapStateToProps)(MessageCard);

@@ -5,8 +5,19 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  type: {
+    type: String,
+    default: 'TEXT'
+  },
   text: {
     type: String
+  },
+  has_attachment: {
+    type: Boolean,
+    default: false
+  },
+  attachment: {
+    type: Object
   },
   seen: {
     type: Boolean,

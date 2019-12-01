@@ -10,10 +10,12 @@ import {
 import { Surface, Paragraph } from 'react-native-paper';
 import attachData from './attach.data';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 
 import {
   verifyCameraPermissions,
-  verifyContactsPermission
+  verifyContactsPermission,
+  verifyLocationPermission
 } from '../../utils/verify-permissions';
 
 const { width, height } = Dimensions.get('window');
@@ -22,7 +24,8 @@ const Attach = ({
   onHide,
   onImageFromCamera,
   onImageFromGallery,
-  navigateToContacts
+  navigateToContacts,
+  onGetLocation
 }) => {
   const _handleGetImage = async fromCamera => {
     const hasPermission = await verifyCameraPermissions();
@@ -30,7 +33,6 @@ const Attach = ({
 
     const options = {
       allowsEditing: true,
-      aspect: [1, 1],
       quality: 1,
       allowsMultipleSelection: false
     };
@@ -51,6 +53,27 @@ const Attach = ({
 
     navigateToContacts();
     onHide();
+  };
+
+  const _handleGetLocation = async () => {
+    const hasPermission = await verifyLocationPermission();
+    if (!hasPermission) return;
+
+    onHide();
+    try {
+      const location = await Location.getCurrentPositionAsync({
+        timeout: 5000
+      });
+
+      onGetLocation({
+        lat: location.coords.latitude,
+        lng: location.coords.longitude
+      });
+    } catch (err) {
+      Alert.alert('Could not fetch location!', 'Please try again later.', [
+        { text: 'Okay' }
+      ]);
+    }
   };
 
   return (
@@ -86,7 +109,7 @@ const Attach = ({
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={_handleGetLocation}
             activeOpacity={0.8}
             style={styles.iconWrapper}
           >
@@ -107,7 +130,7 @@ const Attach = ({
             </Paragraph>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {}}
             activeOpacity={0.8}
             style={styles.iconWrapper}
@@ -125,7 +148,7 @@ const Attach = ({
           >
             <Image source={attachData.audio.icon} style={styles.icon} />
             <Paragraph style={styles.title}>{attachData.audio.title}</Paragraph>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </ScrollView>
       </Surface>
     </>

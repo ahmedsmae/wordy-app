@@ -9,10 +9,7 @@ import Chatting from './chatting.component';
 import { selectCurrentChatId } from '../../redux/chats/chats.selectors';
 import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getChatIdStart } from '../../redux/chats/chats.actions';
-import {
-  getChatImageSource,
-  getUserImageSource
-} from '../../utils/helper-functions';
+import { getChatImageSource } from '../../utils/helper-functions';
 
 const ChattingContainer = ({
   navigation,
@@ -68,7 +65,7 @@ const ChattingContainer = ({
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Avatar.Image
             size={40}
-            source={getUserImageSource(chat, opponent, randomDate)}
+            source={getChatImageSource(chat, opponent, randomDate)}
           />
           <Appbar.Content title={name} subtitle={email} />
         </Appbar.Header>

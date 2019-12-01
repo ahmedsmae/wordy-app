@@ -19,6 +19,7 @@ const app = express();
 
 // Init Middleware / Feathers Routes / Express Routes
 app.use(express.json({ extended: false }));
+app.use('/uploads', express.static('uploads'));
 middleware(app);
 routes(app);
 
