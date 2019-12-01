@@ -7,7 +7,7 @@
     "server": "npm start --prefix backend",
     "mobile": "npm start --prefix mobileend",
     "dev": "concurrently \"npm run server\" \"npm run mobile\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
   },
   "keywords": [
     "chat",
