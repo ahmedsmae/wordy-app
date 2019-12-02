@@ -17,7 +17,6 @@ import MessageCard from './message-card.component';
 
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { uploadMessageImageStart } from '../../redux/chats/chats.actions';
-import { updateRandomDate } from '../../redux/api-utilities/api-utilities.actions';
 import { BASE_URL } from '../../redux/utils/urls';
 import { calcDesiredWidthHeight } from '../../utils/helper-functions';
 
@@ -114,14 +113,8 @@ class Chatting extends React.Component {
     }
   };
 
-  _handleSendImage = async image => {
-    const { uri, width, height } = image;
-    const {
-      chatId,
-      uploadMessageImageStart,
-      currentUser,
-      updateRandomDate
-    } = this.props;
+  _handleSendImage = async ({ uri, width, height }) => {
+    const { uploadMessageImageStart, currentUser } = this.props;
 
     const manipResult = await ImageManipulator.manipulateAsync(
       uri,
@@ -129,22 +122,20 @@ class Chatting extends React.Component {
       { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
     );
 
-    try {
-      this.socket.emit(
-        'new_image_message_from_client',
-        { owner: currentUser._id },
-        (messageId, err) => {
-          if (err) console.log(err);
-          uploadMessageImageStart(chatId, messageId, manipResult, err => {
-            // callback after uploading message
-            if (err) console.log(err);
-            updateRandomDate();
-          });
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
+    const imageFileName = Date.now().toString();
+    uploadMessageImageStart(imageFileName, manipResult, err => {
+      // callback after uploading message
+      if (err) return console.log(err);
+
+      try {
+        this.socket.emit('new_image_message_from_client', {
+          owner: currentUser._id,
+          file_name: imageFileName
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
   };
 
   render() {
@@ -222,9 +213,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  uploadMessageImageStart: (chatId, messageId, image, callback) =>
-    dispatch(uploadMessageImageStart(chatId, messageId, image, callback)),
-  updateRandomDate: () => dispatch(updateRandomDate())
+  uploadMessageImageStart: (imageFileName, image, callback) =>
+    dispatch(uploadMessageImageStart(imageFileName, image, callback))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chatting);

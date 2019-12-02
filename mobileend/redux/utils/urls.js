@@ -69,10 +69,11 @@ export const APP_URLS = {
     method: 'GET',
     url: `${BASE_URL}/api/chats/avatar`
   },
-  SERVE_MESSAGE_IMAGE: messageId => `${BASE_URL}/uploads/${messageId}.jpg`,
+  SERVE_MESSAGE_IMAGE: imageFileName =>
+    `http://wordy-app-aws.s3.ap-south-1.amazonaws.com/shared-images/${imageFileName}.jpg`,
   UPLOAD_MESSAGE_IMAGE: {
     method: 'POST',
-    url: `${BASE_URL}/api/chats/messages` // + /:chatid/:messageid
+    url: `${BASE_URL}/api/chats/messages` // + /:filename
   },
   EDIT_USER_INFO: userInfo => ({
     method: 'PATCH',

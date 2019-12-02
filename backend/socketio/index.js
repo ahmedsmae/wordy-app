@@ -1,8 +1,6 @@
 const sio = require('socket.io');
 const Chat = require('../models/chat');
 const Message = require('../models/message');
-const path = require('path');
-const fs = require('fs');
 
 module.exports = function(expressServer) {
   const io = sio(expressServer);
@@ -76,14 +74,15 @@ module.exports = function(expressServer) {
 
     socket
       .in(chatId)
-      .on('new_image_message_from_client', async ({ owner }, callback) => {
+      .on('new_image_message_from_client', async ({ owner, file_name }) => {
         const message = new Message({
           owner,
           type: 'IMAGE',
           text: '',
           has_attachment: true,
-          attachment: {}
+          attachment: { file_name }
         }).toObject();
+        // console.log(message);
 
         try {
           await Chat.updateOne(
@@ -92,11 +91,8 @@ module.exports = function(expressServer) {
           );
 
           io.to(chatId).emit('new_message_from_server', message);
-
-          callback(message._id.toString());
         } catch (err) {
           console.log(null, err);
-          callback(err);
         }
       });
   });

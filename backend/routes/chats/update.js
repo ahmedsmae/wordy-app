@@ -69,35 +69,17 @@ router.patch(
 
 /**
  * @method - POST
- * @url - '/api/chats/messages/:chatid/:messageid'
+ * @url - '/api/chats/messages/:filename'
  * @data - image file
  * @action - upload image to the server (as a file)
  * @access - private
  */
 router.post(
-  '/messages/:chatid/:messageid',
+  '/messages/:filename',
   auth,
   uploadFiles.single('image'),
   async (req, res) => {
     try {
-      const chat = await Chat.findById(req.params.chatid);
-
-      if (!chat) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Chat does not exists' }] });
-      }
-
-      const message = chat.messages.find(
-        ({ _id }) => _id.toString() === req.params.messageid
-      );
-
-      if (!message) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Message does not exists' }] });
-      }
-
       res.json({ msg: 'Image uploaded seccessfully' });
     } catch (err) {
       console.error(err.message);

@@ -71,17 +71,15 @@ function* createGroupAsync({ payload: { avatar, ...otherProps }, callback }) {
 }
 
 function* uploadMessageImageAsync({
-  payload: { image, chatId, messageId },
+  payload: { image, imageFileName },
   callback
 }) {
   try {
     yield setAuthToken();
-
     const formData = createImageFD('image', image);
-
     yield call(
       axios.post,
-      `${APP_URLS.UPLOAD_MESSAGE_IMAGE.url}/${chatId}/${messageId}`,
+      `${APP_URLS.UPLOAD_MESSAGE_IMAGE.url}/${imageFileName}`,
       formData
     );
 

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import moment from 'moment';
 import {
   View,
@@ -13,8 +11,6 @@ import {
   ToastAndroid
 } from 'react-native';
 import { Paragraph, IconButton, Surface } from 'react-native-paper';
-
-import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 
 import { APP_URLS } from '../../redux/utils/urls';
 import Colors from '../../utils/colors';
@@ -36,8 +32,7 @@ const MessageCard = ({
   index,
   messages,
   opponents,
-  group,
-  randomDate
+  group
 }) => {
   const mySms = owner === userId;
   const sameUser = index > 0 && owner === messages[index - 1].owner;
@@ -206,7 +201,7 @@ const MessageCard = ({
             >
               <Image
                 source={{
-                  uri: `${APP_URLS.SERVE_MESSAGE_IMAGE(_id)}?r=${randomDate}`
+                  uri: APP_URLS.SERVE_MESSAGE_IMAGE(attachment.file_name)
                 }}
                 style={{
                   width: 200,
@@ -264,8 +259,4 @@ const MessageCard = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  randomDate: selectRandomDate
-});
-
-export default connect(mapStateToProps)(MessageCard);
+export default MessageCard;
