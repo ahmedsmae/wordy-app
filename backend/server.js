@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 
-process.setMaxListeners(0);
-// const events = require('events').EventEmitter.defaultMaxListeners = 15
+// process.setMaxListeners(0);
+require('events').EventEmitter.defaultMaxListeners = 15;
 // events.EventEmitter.prototype.setMaxListeners(0);
 
 if (process.env.NODE_ENV !== 'production') {
