@@ -4,7 +4,7 @@
   "description": "Simple chat app with SocketIo and React Native",
   "main": "/backend/server.js",
   "scripts": {
-    "start": "npm start --prefix backend",
+    "start": "cd backend && npm start",
     "server": "npm run server --prefix backend",
     "mobile": "npm start --prefix mobileend",
     "dev": "concurrently \"npm run server\" \"npm run mobile\""

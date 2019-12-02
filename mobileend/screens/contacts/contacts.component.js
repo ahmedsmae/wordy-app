@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import * as Contacts from 'expo-contacts';
+
 import { FlatList } from 'react-native';
 import { List, Appbar } from 'react-native-paper';
-import * as Contacts from 'expo-contacts';
+import { PlaceholderParagraph } from '../../components';
 
 const Con = ({ navigation }) => {
   const [contacts, setContacts] = useState([]);
@@ -25,6 +27,9 @@ const Con = ({ navigation }) => {
       </Appbar.Header>
 
       <FlatList
+        ListEmptyComponent={() => (
+          <PlaceholderParagraph title="There is no contacts with phone numbers on the device" />
+        )}
         data={contacts}
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => {

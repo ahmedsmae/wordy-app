@@ -15,9 +15,17 @@ import { getUserImageSource } from '../../utils/helper-functions';
 const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
   const [searchMode, setSearchMode] = useState(false);
   const [searchQ, setSearchQ] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const loadData = () => {
+    setIsRefreshing(true);
+    getAllUsersStart(err => {
+      setIsRefreshing(false);
+    });
+  };
 
   useEffect(() => {
-    getAllUsersStart(err => {});
+    loadData();
   }, []);
 
   const _handleSelect = opponent => {
@@ -61,30 +69,31 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
         )}
       </Appbar.Header>
 
-      {allUsers.length === 0 ? (
-        <PlaceholderParagraph
-          title="There is no users for now"
-          subtitle="Share Wordy with some friends ans start chatting."
-        />
-      ) : (
-        <FlatList
-          style={{ flex: 1 }}
-          data={displayList}
-          keyExtractor={({ _id }) => String(_id)}
-          renderItem={({ item }) => {
-            const { name, status } = item;
+      <FlatList
+        style={{ flex: 1 }}
+        onRefresh={loadData}
+        refreshing={isRefreshing}
+        ListEmptyComponent={() => (
+          <PlaceholderParagraph
+            title="There is no users for now"
+            subtitle="Share Wordy with some friends ans start chatting."
+          />
+        )}
+        data={displayList}
+        keyExtractor={({ _id }) => String(_id)}
+        renderItem={({ item }) => {
+          const { name, status } = item;
 
-            return (
-              <ListItem
-                imageSource={getUserImageSource(item, randomDate)}
-                title={name}
-                subtitle={status}
-                onPress={_handleSelect.bind(this, item)}
-              />
-            );
-          }}
-        />
-      )}
+          return (
+            <ListItem
+              imageSource={getUserImageSource(item, randomDate)}
+              title={name}
+              subtitle={status}
+              onPress={_handleSelect.bind(this, item)}
+            />
+          );
+        }}
+      />
     </>
   );
 };

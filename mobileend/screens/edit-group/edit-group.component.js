@@ -5,6 +5,7 @@ import { createStructuredSelector } from 'reselect';
 import { View, FlatList, Alert } from 'react-native';
 import { Appbar, TextInput, Divider, List, Avatar } from 'react-native-paper';
 import ImagePicker from './image-picker.component';
+import { PlaceholderParagraph } from '../../components';
 
 import { selectAllUsers } from '../../redux/users/users.selectors';
 import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
@@ -146,6 +147,12 @@ const EditGroup = ({
 
       <FlatList
         style={{ flex: 1 }}
+        ListEmptyComponent={() => (
+          <PlaceholderParagraph
+            title="There is no users for now"
+            subtitle="Share Wordy with some friends ans start chatting."
+          />
+        )}
         data={displayList}
         extraData={groupUsers}
         keyExtractor={({ _id }) => _id}

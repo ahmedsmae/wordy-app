@@ -31,9 +31,17 @@ const Chats = ({
   const [showMenu, setShowMenu] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [searchQ, setSearchQ] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const loadData = () => {
+    setIsRefreshing(true);
+    getAllUserChatsStart(err => {
+      setIsRefreshing(false);
+    });
+  };
 
   useEffect(() => {
-    getAllUserChatsStart(err => {});
+    loadData();
   }, []);
 
   const _handleSelect = (chat, opponent) => {
@@ -121,37 +129,39 @@ const Chats = ({
         </Menu>
       </Appbar.Header>
 
-      {userChats.length === 0 ? (
-        <PlaceholderParagraph
-          title="You do not have any chats yet"
-          subtitle="Select user and start chatting now"
-          caption="Enjoy !"
-        />
-      ) : (
-        <FlatList
-          style={{ flex: 1 }}
-          data={displayList}
-          keyExtractor={({ _id }) => String(_id)}
-          renderItem={({ item }) => {
-            const { _id, opponents, messages, group, name } = item;
-            const opponent = getOpponent(opponents, currentUser._id);
+      <FlatList
+        style={{ flex: 1 }}
+        onRefresh={loadData}
+        refreshing={isRefreshing}
+        data={displayList}
+        ListEmptyComponent={() => (
+          <PlaceholderParagraph
+            title="You do not have any chats yet"
+            subtitle="Select user and start chatting now"
+            caption="Enjoy !"
+          />
+        )}
+        keyExtractor={({ _id }) => String(_id)}
+        renderItem={({ item }) => {
+          const { _id, opponents, messages, group, name } = item;
+          const opponent = getOpponent(opponents, currentUser._id);
 
-            return (
-              <ListItem
-                imageSource={getChatImageSource(item, opponent, randomDate)}
-                title={group ? name : opponent.name}
-                subtitle={messages.length ? messages[0].text : ''}
-                time={
-                  messages.length
-                    ? moment(messages[0].createdAt).format('h:m a')
-                    : ''
-                }
-                onPress={_handleSelect.bind(this, item, opponent)}
-              />
-            );
-          }}
-        />
-      )}
+          return (
+            <ListItem
+              imageSource={getChatImageSource(item, opponent, randomDate)}
+              title={group ? name : opponent.name}
+              subtitle={messages.length ? messages[0].text : ''}
+              time={
+                messages.length
+                  ? moment(messages[0].createdAt).format('h:m a')
+                  : ''
+              }
+              onPress={_handleSelect.bind(this, item, opponent)}
+            />
+          );
+        }}
+      />
+
       <FAB
         style={styles.fab}
         icon="account-group"

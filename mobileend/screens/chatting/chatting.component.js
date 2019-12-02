@@ -155,31 +155,30 @@ class Chatting extends React.Component {
             contentContainerStyle={{ flex: 1 }}
             keyboardShouldPersistTaps="always"
           >
-            {messages.length === 0 ? (
-              <PlaceholderParagraph
-                title="This chat still empty"
-                subtitle="Be Wordy and send the first message..."
-              />
-            ) : (
-              <FlatList
-                style={{ flex: 1, marginHorizontal: 10, marginBottom: 60 }}
-                ref={this.flatListMessages}
-                onContentSizeChange={this._scrollToBottom}
-                onLayout={this._scrollToBottom}
-                data={messages}
-                keyExtractor={({ _id }) => String(_id)}
-                renderItem={({ item, index }) => (
-                  <MessageCard
-                    message={item}
-                    userId={currentUser._id}
-                    messages={messages}
-                    opponents={opponents}
-                    index={index}
-                    group={group}
-                  />
-                )}
-              />
-            )}
+            <FlatList
+              style={{ flex: 1, marginHorizontal: 10, marginBottom: 60 }}
+              ListEmptyComponent={() => (
+                <PlaceholderParagraph
+                  title="This chat still empty"
+                  subtitle="Be Wordy and send the first message..."
+                />
+              )}
+              ref={this.flatListMessages}
+              onContentSizeChange={this._scrollToBottom}
+              onLayout={this._scrollToBottom}
+              data={messages}
+              keyExtractor={({ _id }) => String(_id)}
+              renderItem={({ item, index }) => (
+                <MessageCard
+                  message={item}
+                  userId={currentUser._id}
+                  messages={messages}
+                  opponents={opponents}
+                  index={index}
+                  group={group}
+                />
+              )}
+            />
 
             <InputSubmit
               text={newMessage}

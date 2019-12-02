@@ -40,7 +40,10 @@ function* signUpUserAsync({ payload, callback }) {
   try {
     const response = yield call(axios, APP_URLS.SIGN_UP_NEW_USER(payload));
 
+    // Add new Token and remove all others
     yield AsyncStorage.setItem('BASIC_TOKEN', response.data.token);
+    AsyncStorage.removeItem('FACEBOOK_TOKEN');
+    AsyncStorage.removeItem('GOOGLE_TOKEN');
 
     yield call(callback);
     yield put(signUpUserSuccess(response.data));
@@ -58,6 +61,8 @@ function* signInUserAsync({ payload, callback }) {
     const response = yield call(axios, APP_URLS.SIGN_IN_USER(payload));
 
     yield AsyncStorage.setItem('BASIC_TOKEN', response.data.token);
+    yield AsyncStorage.removeItem('FACEBOOK_TOKEN');
+    yield AsyncStorage.removeItem('GOOGLE_TOKEN');
 
     yield call(callback);
     yield put(signInUserSuccess(response.data));
@@ -79,7 +84,10 @@ function* signInWithFacebookAsync({ callback }) {
 
     if (type === 'success') {
       yield AsyncStorage.setItem('FACEBOOK_TOKEN', token);
-      yield setAuthToken();
+      yield AsyncStorage.removeItem('BASIC_TOKEN');
+      yield AsyncStorage.removeItem('GOOGLE_TOKEN');
+
+      axios.defaults.headers.common['Authorization'] = `Facebook ${token}`;
       const response = yield call(axios, APP_URLS.SIGN_IN_WITH_FACEBOOK);
       yield call(callback);
       yield put(signInWithFacebookSuccess(response.data));
@@ -105,7 +113,10 @@ function* signInWithGoogleAsync({ callback }) {
 
     if (type === 'success') {
       yield AsyncStorage.setItem('GOOGLE_TOKEN', accessToken);
-      yield setAuthToken();
+      yield AsyncStorage.removeItem('BASIC_TOKEN');
+      yield AsyncStorage.removeItem('FACEBOOK_TOKEN');
+
+      axios.defaults.headers.common['Authorization'] = `Google ${accessToken}`;
       const response = yield call(axios, APP_URLS.SIGN_IN_WITH_GOOGLE);
       yield call(callback);
       yield put(signInWithGoogleSuccess(response.data));
@@ -177,6 +188,8 @@ function* signOutUserAsync({ callback }) {
     yield call(axios, APP_URLS.SIGN_OUT_USER);
 
     yield AsyncStorage.removeItem('BASIC_TOKEN');
+    yield AsyncStorage.removeItem('FACEBOOK_TOKEN');
+    yield AsyncStorage.removeItem('GOOGLE_TOKEN');
 
     yield call(callback);
     yield put(signoutUserSuccess());
