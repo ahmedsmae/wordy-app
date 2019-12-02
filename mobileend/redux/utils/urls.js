@@ -1,4 +1,4 @@
-const production = false;
+const production = true;
 
 const DEV_BASE_URL = 'http://192.168.1.100:5000';
 const PRO_BASE_URL = 'https://afifi-wordy.herokuapp.com';
