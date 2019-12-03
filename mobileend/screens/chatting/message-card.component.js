@@ -32,7 +32,8 @@ const MessageCard = ({
   index,
   messages,
   opponents,
-  group
+  group,
+  previewImage
 }) => {
   const mySms = owner === userId;
   const sameUser = index > 0 && owner === messages[index - 1].owner;
@@ -197,7 +198,11 @@ const MessageCard = ({
                 marginBottom: 20
               }}
               activeOpacity={1}
-              onPress={() => {}}
+              onPress={previewImage.bind(this, {
+                owner: smsOwnerName,
+                date: createdAt,
+                uri: APP_URLS.SERVE_MESSAGE_IMAGE(attachment.file_name)
+              })}
             >
               <Image
                 source={{

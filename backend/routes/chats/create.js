@@ -11,7 +11,7 @@ const Chat = require('../../models/chat');
  * @method - POST
  * @url - '/api/chats/creategroup'
  * @data - { opponents, name, status, image_uploaded } + image file
- * @action - get chat by user and opponent ids
+ * @action - create new chat group
  * @access - private
  */
 router.post('/creategroup', auth, upload.single('avatar'), async (req, res) => {
@@ -26,10 +26,13 @@ router.post('/creategroup', auth, upload.single('avatar'), async (req, res) => {
         .json({ errors: [{ msg: 'User does not exists' }] });
     }
 
-    const buffer = await sharp(req.file.buffer)
-      .resize({ width: 200, height: 200 })
-      .png()
-      .toBuffer();
+    let buffer;
+    if (req.file) {
+      buffer = await sharp(req.file.buffer)
+        .resize({ width: 200, height: 200 })
+        .png()
+        .toBuffer();
+    }
 
     const chat = new Chat({
       opponents: [user._id, ...JSON.parse(opponents)],
@@ -52,8 +55,8 @@ router.post('/creategroup', auth, upload.single('avatar'), async (req, res) => {
         admin: 1
       }
     )
-      .populate('opponents', '-tokens')
-      .populate('admin', '-tokens');
+      .populate('opponents', '-tokens -avatar')
+      .populate('admin', '-tokens -avatar');
 
     res.json({ userChats });
   } catch (err) {

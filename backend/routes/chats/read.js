@@ -36,9 +36,11 @@ router.get('/alluserchats', auth, async (req, res) => {
         messages: { $slice: -1 }
       }
     )
-      .populate('opponents', '-tokens')
-      .populate('admin', '-tokens');
-    // exclude tokens when u populate opponents or admin
+      // exclude tokens when u populate opponents or admin
+      .populate('opponents', '-tokens -avatar')
+      .populate('admin', '-tokens -avatar')
+      // ! sort the chats by the last message date
+      .sort({ 'messages[0].createdAt': -1 });
 
     res.json({ userChats });
   } catch (err) {
@@ -77,6 +79,40 @@ router.get('/getchatid/:opponentid', auth, async (req, res) => {
     }
 
     res.json({ chatId: chat._id });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ errors: [{ msg: err.message }] });
+  }
+});
+
+/**
+ * @method - GET
+ * @url - '/api/chats/getchatbyid/:chatid'
+ * @data - token header
+ * @action - get chat by it's
+ * @access - private
+ */
+router.get('/getchatbyid/:chatid', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'User does not exists' }] });
+    }
+
+    let chat = await Chat.findById(req.params.chatid)
+      .populate('opponents', '-tokens -avatar')
+      .populate('admin', '-tokens -avatar');
+
+    if (!chat) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'Chat does not exists' }] });
+    }
+
+    res.json({ chat });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ errors: [{ msg: err.message }] });

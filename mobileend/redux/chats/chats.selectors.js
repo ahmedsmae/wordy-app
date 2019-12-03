@@ -12,6 +12,11 @@ export const selectCurrentChatId = createSelector(
   chats => chats.currentChatId
 );
 
+export const selectSelectedChat = createSelector(
+  [selectChats],
+  chats => chats.selectedChat
+);
+
 export const selectLoading = createSelector(
   [selectChats],
   chats => chats.loading

@@ -8,4 +8,5 @@ module.exports = function(app) {
   app.use('/api/chats', require('./chats/read'));
   app.use('/api/chats', require('./chats/create'));
   app.use('/api/chats', require('./chats/update'));
+  app.use('/api/chats', require('./chats/delete'));
 };

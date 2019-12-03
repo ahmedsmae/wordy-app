@@ -18,6 +18,8 @@ import ContactUsScreen from '../screens/contact-us/contact-us.component';
 import AboutScreen from '../screens/about/about.component';
 import UserAgreementScreen from '../screens/user-agreement/user-agreement.component';
 import ContactsScreen from '../screens/contacts/contacts.component';
+import ChatInfoScreen from '../screens/chat-info/chat-info.component';
+import SharedImagesScreen from '../screens/shared-images/shared-images.component';
 
 import hideHeaderNavOptions from './hide-header-nav-options';
 
@@ -41,6 +43,8 @@ export const createRootNavigator = (currentUser, WizardDisplayed) => {
     {
       Chats: ChatsScreen,
       Chatting: ChattingScreenContainer,
+      ChatInfo: ChatInfoScreen,
+      SharedImages: SharedImagesScreen,
       Contacts: ContactsScreen,
       Users: UsersScreen,
       Settings: SettingsScreen,

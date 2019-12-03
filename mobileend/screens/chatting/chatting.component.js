@@ -1,16 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import io from 'socket.io-client';
 import { createStructuredSelector } from 'reselect';
 import * as ImageManipulator from 'expo-image-manipulator';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 import {
+  View,
   StyleSheet,
   FlatList,
   ScrollView,
   KeyboardAvoidingView,
-  ImageBackground
+  ImageBackground,
+  Modal,
+  Dimensions,
+  BackHandler
 } from 'react-native';
+import { Paragraph, IconButton, Caption } from 'react-native-paper';
 import { PlaceholderParagraph } from '../../components';
 import InputSubmit from './input-submit.component';
 import MessageCard from './message-card.component';
@@ -20,17 +27,27 @@ import { uploadMessageImageStart } from '../../redux/chats/chats.actions';
 import { BASE_URL } from '../../redux/utils/urls';
 import { calcDesiredWidthHeight } from '../../utils/helper-functions';
 
+const { width } = Dimensions.get('window');
+
 class Chatting extends React.Component {
   constructor(props) {
     super(props);
     this.socket;
     this.flatListMessages = React.createRef();
 
-    this.state = { group: false, opponents: [], messages: [], newMessage: '' };
+    this.state = {
+      group: false,
+      opponents: [],
+      messages: [],
+      newMessage: '',
+      previewImage: { uri: '', owner: '', date: '' },
+      showImagePreview: false
+    };
   }
 
   componentWillUnmount() {
     this.socket.close();
+    // this.backHandler.remove();
   }
 
   componentWillReceiveProps({ contact }) {
@@ -75,6 +92,15 @@ class Chatting extends React.Component {
     } catch (err) {
       console.log(err);
     }
+
+    // this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+    //   console.log('going back');
+
+    //   if (this.state.showImagePreview) {
+    //     this.setState({ showImagePreview: false });
+    //     return true;
+    //   }
+    // });
   }
 
   _scrollToBottom = () =>
@@ -140,7 +166,14 @@ class Chatting extends React.Component {
 
   render() {
     const { currentUser, navigateToContacts } = this.props;
-    const { newMessage, messages, opponents, group } = this.state;
+    const {
+      newMessage,
+      messages,
+      opponents,
+      group,
+      showImagePreview,
+      previewImage
+    } = this.state;
 
     return (
       <>
@@ -150,6 +183,61 @@ class Chatting extends React.Component {
           style={styles.imageBg}
           imageStyle={{ opacity: 0.3 }}
         />
+
+        <Modal visible={showImagePreview} transparent={true}>
+          <ImageViewer
+            imageUrls={[
+              {
+                url: previewImage.uri,
+                props: { owner: previewImage.owner, date: previewImage.date }
+              }
+            ]}
+            renderIndicator={() => null} // no 1/1
+            renderFooter={() => (
+              <View
+                style={{
+                  height: 50,
+                  width,
+                  padding: 10,
+                  flexDirection: 'row',
+                  backgroundColor: 'rgba(0,0,0,.3)',
+                  alignItems: 'center'
+                }}
+              >
+                <Caption style={{ color: 'white' }}>From </Caption>
+                <Paragraph
+                  style={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    flex: 1
+                  }}
+                >
+                  {previewImage.owner}
+                </Paragraph>
+
+                <Caption style={{ color: 'white' }}>date </Caption>
+                <Paragraph style={{ color: 'white', fontSize: 14 }}>
+                  {moment(previewImage.date).calendar(null, {
+                    sameDay: '[Today]',
+                    nextDay: '[Tomorrow]',
+                    nextWeek: 'dddd',
+                    lastDay: '[Yesterday]',
+                    lastWeek: '[Last] dddd',
+                    sameElse: 'DD/MM/YYYY'
+                  })}
+                </Paragraph>
+                <IconButton
+                  icon="close"
+                  color="white"
+                  size={30}
+                  onPress={() => this.setState({ showImagePreview: false })}
+                />
+              </View>
+            )}
+          />
+        </Modal>
+
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
           <ScrollView
             contentContainerStyle={{ flex: 1 }}
@@ -176,6 +264,12 @@ class Chatting extends React.Component {
                   opponents={opponents}
                   index={index}
                   group={group}
+                  previewImage={image =>
+                    this.setState({
+                      previewImage: image,
+                      showImagePreview: true
+                    })
+                  }
                 />
               )}
             />

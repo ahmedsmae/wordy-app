@@ -35,6 +35,9 @@ const ChattingContainer = ({
           <Appbar.Content
             title={chat.group ? chat.name : opponent.name}
             subtitle={chat.group ? chat.status : opponent.email}
+            onPress={() =>
+              navigation.navigate('ChatInfo', { chatId: chat._id })
+            }
           />
         </Appbar.Header>
 
@@ -67,7 +70,13 @@ const ChattingContainer = ({
             size={40}
             source={getChatImageSource(chat, opponent, randomDate)}
           />
-          <Appbar.Content title={name} subtitle={email} />
+          <Appbar.Content
+            title={name}
+            subtitle={email}
+            onPress={() =>
+              navigation.navigate('ChatInfo', { chatId: currentChatId })
+            }
+          />
         </Appbar.Header>
 
         <Chatting

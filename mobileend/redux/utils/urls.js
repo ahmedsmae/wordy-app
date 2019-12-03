@@ -1,4 +1,4 @@
-const production = true;
+const production = false;
 
 const DEV_BASE_URL = 'http://192.168.1.100:5000';
 const PRO_BASE_URL = 'https://afifi-wordy.herokuapp.com';
@@ -96,6 +96,10 @@ export const APP_URLS = {
     method: 'GET',
     url: `${BASE_URL}/api/chats/getchatid/${opponentId}`
   }),
+  GET_CHAT_BY_ID: chatId => ({
+    method: 'GET',
+    url: `${BASE_URL}/api/chats/getchatbyid/${chatId}`
+  }),
   CREATE_GROUP: {
     method: 'POST',
     url: `${BASE_URL}/api/chats/creategroup`
@@ -103,5 +107,9 @@ export const APP_URLS = {
   UPDATE_GROUP_INFO: {
     method: 'PATCH',
     url: `${BASE_URL}/api/chats/updategroupinfo`
-  }
+  },
+  DELETE_CHAT: chatId => ({
+    method: 'DELETE',
+    url: `${BASE_URL}/api/chats/${chatId}`
+  })
 };

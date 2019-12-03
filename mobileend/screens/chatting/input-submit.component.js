@@ -77,6 +77,7 @@ const InputSubmit = ({
           onPress={_handleGetImage}
         />
       </View>
+
       <IconButton
         style={styles.send}
         color="white"
@@ -97,42 +98,38 @@ const styles = StyleSheet.create({
     bottom: 0
   },
   inputContainer: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    backgroundColor: Colors.LIGHT,
+    borderRadius: 25,
+    maxHeight: 145,
+    margin: 2,
+    marginLeft: 5,
+    marginBottom: 5,
+    elevation: 1
   },
   input: {
+    flex: 1,
     fontSize: 17,
     backgroundColor: Colors.LIGHT,
     marginLeft: 5,
-    minHeight: 50,
     paddingLeft: 15,
-    paddingRight: 45,
     paddingVertical: 5,
-    maxHeight: 147,
-    marginBottom: 5,
-    borderTopLeftRadius: 25,
-    lineHeight: 23,
-    borderBottomLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
-    elevation: 1
+    lineHeight: 22,
+    marginVertical: 5
   },
   camera: {
-    position: 'absolute',
-    right: 0,
     width: 40,
     height: 40,
-    bottom: 3,
-    elevation: 1,
-    padding: 4
+    padding: 4,
+    margin: 5
   },
   attach: {
-    position: 'absolute',
-    right: 40,
-    bottom: 3,
     width: 40,
     height: 40,
-    elevation: 1,
-    transform: [{ rotate: '-120deg' }]
+    transform: [{ rotate: '-120deg' }],
+    margin: 5
   },
   send: {
     backgroundColor: Colors.ACCENT,
@@ -141,6 +138,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     elevation: 1,
+    margin: 2,
+    marginRight: 5,
     marginBottom: 5
   }
 });

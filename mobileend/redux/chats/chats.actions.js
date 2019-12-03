@@ -33,6 +33,23 @@ export const getChatIdFailure = errorMessage => ({
   payload: errorMessage
 });
 
+// GET CHAT BY ID
+export const getChatByIdStart = (chatId, callback) => ({
+  type: ChatsActionTypes.GET_CHAT_BY_ID_START,
+  payload: chatId,
+  callback
+});
+
+export const getChatByIdSuccess = chat => ({
+  type: ChatsActionTypes.GET_CHAT_BY_ID_SUCCESS,
+  payload: chat
+});
+
+export const getChatByIdFailure = errorMessage => ({
+  type: ChatsActionTypes.GET_CHAT_BY_ID_FAILURE,
+  payload: errorMessage
+});
+
 // CREATE GROUP
 export const createGroupStart = (groupData, callback) => ({
   type: ChatsActionTypes.CREATE_GROUP_START,
@@ -47,6 +64,40 @@ export const createGroupSuccess = userChats => ({
 
 export const createGroupFailure = errorMessage => ({
   type: ChatsActionTypes.CREATE_GROUP_FAILURE,
+  payload: errorMessage
+});
+
+// UPDATE GROUP INFO
+export const updateGroupInfoStart = (groupData, callback) => ({
+  type: ChatsActionTypes.UPDATE_GROUP_INFO_START,
+  payload: groupData,
+  callback
+});
+
+export const updateGroupInfoSuccess = userChats => ({
+  type: ChatsActionTypes.UPDATE_GROUP_INFO_SUCCESS,
+  payload: userChats
+});
+
+export const updateGroupInfoFailure = errorMessage => ({
+  type: ChatsActionTypes.UPDATE_GROUP_INFO_FAILURE,
+  payload: errorMessage
+});
+
+// DELETE CHAT
+export const deleteChatStart = (chatId, callback) => ({
+  type: ChatsActionTypes.DELETE_CHAT_START,
+  payload: chatId,
+  callback
+});
+
+export const deleteChatSuccess = userChats => ({
+  type: ChatsActionTypes.DELETE_CHAT_SUCCESS,
+  payload: userChats
+});
+
+export const deleteChatFailure = errorMessage => ({
+  type: ChatsActionTypes.DELETE_CHAT_FAILURE,
   payload: errorMessage
 });
 

@@ -11,8 +11,14 @@ import {
   getAllUserChatsFailure,
   getChatIdSuccess,
   getChatIdFailure,
+  getChatByIdSuccess,
+  getChatByIdFailure,
   createGroupSuccess,
   createGroupFailure,
+  updateGroupInfoSuccess,
+  updateGroupInfoFailure,
+  deleteChatSuccess,
+  deleteChatFailure,
   uploadMessageImageSuccess,
   uploadMessageImageFailure
 } from './chats.actions';
@@ -47,6 +53,21 @@ function* getChatIdAsync({ payload, callback }) {
   }
 }
 
+function* getChatByIdAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    const response = yield call(axios, APP_URLS.GET_CHAT_BY_ID(payload));
+
+    yield call(callback);
+    yield put(getChatByIdSuccess(response.data.chat));
+  } catch (err) {
+    yield call(callback, err);
+    yield put(getChatByIdFailure(err.message));
+    console.log('getChatByIdAsync', err.response);
+  }
+}
+
 function* createGroupAsync({ payload: { avatar, ...otherProps }, callback }) {
   try {
     yield setAuthToken();
@@ -67,6 +88,47 @@ function* createGroupAsync({ payload: { avatar, ...otherProps }, callback }) {
     yield call(callback, err);
     yield put(createGroupFailure(err.message));
     console.log('createGroupAsync', err.response);
+  }
+}
+
+function* updateGroupInfoAsync({
+  payload: { avatar, ...otherProps },
+  callback
+}) {
+  try {
+    yield setAuthToken();
+
+    const formData = createImageAndDataFD('avatar', avatar, otherProps);
+
+    const response = yield call(
+      axios.patch,
+      APP_URLS.UPDATE_GROUP_INFO.url,
+      formData
+    );
+
+    yield call(callback);
+    yield put(updateGroupInfoSuccess(response.data.userChats));
+  } catch (err) {
+    console.log(err);
+
+    yield call(callback, err);
+    yield put(updateGroupInfoFailure(err.message));
+    console.log('updateGroupInfoAsync', err);
+  }
+}
+
+function* deleteChatAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    const response = yield call(axios, APP_URLS.DELETE_CHAT(payload));
+
+    yield call(callback);
+    yield put(deleteChatSuccess(response.data.userChats));
+  } catch (err) {
+    yield call(callback, err);
+    yield put(deleteChatFailure(err.message));
+    console.log('deleteChatAsync', err.response);
   }
 }
 
@@ -105,8 +167,23 @@ function* getChatIdStart() {
   yield takeLatest(ChatsActionTypes.GET_CHAT_ID_START, getChatIdAsync);
 }
 
+function* getChatByIdStart() {
+  yield takeLatest(ChatsActionTypes.GET_CHAT_BY_ID_START, getChatByIdAsync);
+}
+
 function* createGroupStart() {
   yield takeLatest(ChatsActionTypes.CREATE_GROUP_START, createGroupAsync);
+}
+
+function* updateGroupInfoStart() {
+  yield takeLatest(
+    ChatsActionTypes.UPDATE_GROUP_INFO_START,
+    updateGroupInfoAsync
+  );
+}
+
+function* deleteChatStart() {
+  yield takeLatest(ChatsActionTypes.DELETE_CHAT_START, deleteChatAsync);
 }
 
 function* uploadMessageImageStart() {
@@ -120,7 +197,10 @@ export default function* chatsSagas() {
   yield all([
     call(getAllUserChatsStart),
     call(getChatIdStart),
+    call(getChatByIdStart),
     call(createGroupStart),
+    call(updateGroupInfoStart),
+    call(deleteChatStart),
     call(uploadMessageImageStart)
   ]);
 }

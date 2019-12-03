@@ -32,8 +32,11 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
     navigation.navigate('Chatting', { opponent });
   };
 
-  const displayList = allUsers.filter(({ name }) =>
-    name.toLowerCase().includes(searchQ.toLowerCase())
+  const displayList = allUsers.filter(({ name, email }) =>
+    name
+      .concat(email)
+      .toLowerCase()
+      .includes(searchQ.toLowerCase())
   );
 
   return (
@@ -41,7 +44,7 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
       <Appbar.Header>
         {searchMode ? (
           <Searchbar
-            placeholder="Search username..."
+            placeholder="Search username or email..."
             value={searchQ}
             autoFocus
             clearButtonMode="always"
@@ -54,8 +57,7 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
           />
         ) : (
           <>
-            <Appbar.Action
-              icon="arrow-left"
+            <Appbar.BackAction
               color="white"
               onPress={() => navigation.goBack()}
             />
@@ -76,7 +78,7 @@ const Users = ({ navigation, allUsers, getAllUsersStart, randomDate }) => {
         ListEmptyComponent={() => (
           <PlaceholderParagraph
             title="There is no users for now"
-            subtitle="Share Wordy with some friends ans start chatting."
+            subtitle="Share Wordy with some friends and start chatting."
           />
         )}
         data={displayList}

@@ -7,10 +7,15 @@ import { Appbar, TextInput, Divider, List, Avatar } from 'react-native-paper';
 import ImagePicker from './image-picker.component';
 import { PlaceholderParagraph } from '../../components';
 
+import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { selectAllUsers } from '../../redux/users/users.selectors';
 import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { getAllUsersStart } from '../../redux/users/users.actions';
-import { createGroupStart } from '../../redux/chats/chats.actions';
+import {
+  createGroupStart,
+  updateGroupInfoStart,
+  deleteChatStart
+} from '../../redux/chats/chats.actions';
 import { updateRandomDate } from '../../redux/api-utilities/api-utilities.actions';
 import { APP_URLS } from '../../redux/utils/urls';
 import { getUserImageSource } from '../../utils/helper-functions';
@@ -20,15 +25,24 @@ const EditGroup = ({
   allUsers,
   getAllUsersStart,
   createGroupStart,
+  updateGroupInfoStart,
+  deleteChatStart,
   randomDate,
+  currentUser,
   updateRandomDate
 }) => {
   const group = navigation.getParam('group');
 
-  const [groupUsers, setGroupUsers] = useState(group ? group.opponents : []);
+  const [groupUsers, setGroupUsers] = useState(
+    group
+      ? group.opponents.filter(
+          ({ _id }) => String(_id) !== String(currentUser._id)
+        )
+      : []
+  );
   const [groupInfo, setGroupInfo] = useState({
     groupName: group ? group.name : '',
-    groupStatus: groupStatus ? group.status : '',
+    groupStatus: group ? group.status : '',
     groupAvatar:
       group && group.image_uploaded
         ? `${APP_URLS.SERVE_CHAT_AVATAR.url}/${group._id}?r=${randomDate}`
@@ -48,8 +62,8 @@ const EditGroup = ({
 
   const displayList = allUsers.filter(({ name, email }) =>
     name
-      .toLowerCase()
       .concat(email)
+      .toLowerCase()
       .includes(searchQ.toLowerCase())
   );
 
@@ -69,23 +83,40 @@ const EditGroup = ({
     }
 
     setDisabled(true);
-    createGroupStart(
-      {
-        name: groupName,
-        status: groupStatus,
-        opponents: groupUsers,
-        image_uploaded: !!groupAvatar,
-        avatar: groupAvatar
-      },
-      err => {
-        // callback action
-        // snackbar if error
+    group
+      ? updateGroupInfoStart(
+          {
+            ...group,
+            name: groupName,
+            status: groupStatus,
+            opponents: groupUsers,
+            image_uploaded: !!groupAvatar,
+            avatar: groupAvatar
+          },
+          err => {
+            // callback action
+            // snackbar if error
 
-        updateRandomDate();
-        setDisabled(false);
-        navigation.goBack();
-      }
-    );
+            navigation.navigate('Chats');
+          }
+        )
+      : createGroupStart(
+          {
+            name: groupName,
+            status: groupStatus,
+            opponents: groupUsers,
+            image_uploaded: !!groupAvatar,
+            avatar: groupAvatar
+          },
+          err => {
+            // callback action
+            // snackbar if error
+
+            updateRandomDate();
+            setDisabled(false);
+            navigation.goBack();
+          }
+        );
   };
 
   return (
@@ -98,6 +129,28 @@ const EditGroup = ({
           disabled={disabled}
           onPress={_handleSubmit}
         />
+        {group && (
+          <Appbar.Action
+            icon="delete-forever"
+            disabled={disabled}
+            onPress={() =>
+              Alert.alert(
+                'Delete Chat Room',
+                'Would you like to delete this chat room ?',
+                [
+                  { text: 'CANCEL' },
+                  {
+                    text: 'Delete',
+                    onPress: () =>
+                      deleteChatStart(group._id, err => {
+                        navigation.navigate('Chats');
+                      })
+                  }
+                ]
+              )
+            }
+          />
+        )}
       </Appbar.Header>
 
       <View
@@ -150,7 +203,7 @@ const EditGroup = ({
         ListEmptyComponent={() => (
           <PlaceholderParagraph
             title="There is no users for now"
-            subtitle="Share Wordy with some friends ans start chatting."
+            subtitle="Share Wordy with some friends and start chatting."
           />
         )}
         data={displayList}
@@ -196,13 +249,18 @@ const EditGroup = ({
 
 const mapStateToProps = createStructuredSelector({
   allUsers: selectAllUsers,
-  randomDate: selectRandomDate
+  randomDate: selectRandomDate,
+  currentUser: selectCurrentUser
 });
 
 const mapDispatchToProps = dispatch => ({
   getAllUsersStart: callback => dispatch(getAllUsersStart(callback)),
   createGroupStart: (groupData, callback) =>
     dispatch(createGroupStart(groupData, callback)),
+  updateGroupInfoStart: (groupData, callback) =>
+    dispatch(updateGroupInfoStart(groupData, callback)),
+  deleteChatStart: (chatId, callback) =>
+    dispatch(deleteChatStart(chatId, callback)),
   updateRandomDate: () => dispatch(updateRandomDate())
 });
 

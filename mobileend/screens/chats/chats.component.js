@@ -72,7 +72,7 @@ const Chats = ({
       <Appbar.Header style={{ backgroundColor: Colors.PRIMARY }}>
         {searchMode ? (
           <Searchbar
-            placeholder="Search chat..."
+            placeholder="Search chat name or username..."
             value={searchQ}
             autoFocus
             clearButtonMode="always"

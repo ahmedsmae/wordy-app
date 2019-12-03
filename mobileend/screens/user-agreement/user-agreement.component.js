@@ -7,6 +7,7 @@ const UserAgreement = ({ navigation }) => {
   return (
     <>
       <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{
           marginTop: 30,
           paddingHorizontal: 10,
