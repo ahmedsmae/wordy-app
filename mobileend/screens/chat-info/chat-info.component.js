@@ -27,7 +27,10 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import { selectCurrentUser } from '../../redux/current-user/current-user.selectors';
 import { selectRandomDate } from '../../redux/api-utilities/api-utilities.selectors';
 import { selectSelectedChat } from '../../redux/chats/chats.selectors';
-import { getChatByIdStart } from '../../redux/chats/chats.actions';
+import {
+  getChatByIdStart,
+  removeUserFromChatStart
+} from '../../redux/chats/chats.actions';
 
 import { APP_URLS } from '../../redux/utils/urls';
 import {
@@ -43,6 +46,7 @@ const ChatInfo = ({
   currentUser,
   selectedChat,
   getChatByIdStart,
+  removeUserFromChatStart,
   randomDate
 }) => {
   const chatId = navigation.getParam('chatId');
@@ -312,10 +316,10 @@ const ChatInfo = ({
           <IconButton
             style={{
               position: 'absolute',
-              top: 25,
-              right: 0
+              top: 30,
+              right: 10
             }}
-            size={30}
+            size={25}
             icon="pencil"
             color="white"
             onPress={() =>
@@ -330,7 +334,7 @@ const ChatInfo = ({
             style={{
               position: 'absolute',
               top: 25,
-              right: 0
+              right: 10
             }}
             size={30}
             icon="close"
@@ -343,9 +347,10 @@ const ChatInfo = ({
                   { text: 'CANCEL' },
                   {
                     text: 'LEAVE',
-                    onPress: () => {
-                      // leave chat action
-                    }
+                    onPress: () =>
+                      removeUserFromChatStart(selectedChat._id, err => {
+                        navigation.navigate('Chats');
+                      })
                   }
                 ]
               )
@@ -364,7 +369,9 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
   getChatByIdStart: (chatId, callback) =>
-    dispatch(getChatByIdStart(chatId, callback))
+    dispatch(getChatByIdStart(chatId, callback)),
+  removeUserFromChatStart: (chatId, callback) =>
+    dispatch(removeUserFromChatStart(chatId, callback))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatInfo);

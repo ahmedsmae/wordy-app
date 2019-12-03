@@ -101,6 +101,23 @@ export const deleteChatFailure = errorMessage => ({
   payload: errorMessage
 });
 
+// REMOVE USER FROM CHAT
+export const removeUserFromChatStart = (chatId, callback) => ({
+  type: ChatsActionTypes.REMOVE_USER_FROM_CHAT_START,
+  payload: chatId,
+  callback
+});
+
+export const removeUserFromChatSuccess = userChats => ({
+  type: ChatsActionTypes.REMOVE_USER_FROM_CHAT_SUCCESS,
+  payload: userChats
+});
+
+export const removeUserFromChatFailure = errorMessage => ({
+  type: ChatsActionTypes.REMOVE_USER_FROM_CHAT_FAILURE,
+  payload: errorMessage
+});
+
 // UPLOAD MESSAGE IMAGE
 export const uploadMessageImageStart = (imageFileName, image, callback) => ({
   type: ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_START,

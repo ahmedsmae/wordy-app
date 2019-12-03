@@ -21,8 +21,6 @@ const ChattingContainer = ({
   const opponent = navigation.getParam('opponent');
   const contact = navigation.getParam('contact');
 
-  const { name, email } = opponent;
-
   if (chat) {
     return (
       <>
@@ -71,8 +69,8 @@ const ChattingContainer = ({
             source={getChatImageSource(chat, opponent, randomDate)}
           />
           <Appbar.Content
-            title={name}
-            subtitle={email}
+            title={opponent && opponent.name}
+            subtitle={opponent && opponent.email}
             onPress={() =>
               navigation.navigate('ChatInfo', { chatId: currentChatId })
             }

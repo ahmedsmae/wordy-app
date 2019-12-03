@@ -111,5 +111,9 @@ export const APP_URLS = {
   DELETE_CHAT: chatId => ({
     method: 'DELETE',
     url: `${BASE_URL}/api/chats/${chatId}`
+  }),
+  REMOVE_USER_FROM_CHAT: chatId => ({
+    method: 'PATCH',
+    url: `${BASE_URL}/api/chats/removeuserfromchat/${chatId}`
   })
 };

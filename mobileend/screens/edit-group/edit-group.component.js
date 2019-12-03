@@ -33,11 +33,13 @@ const EditGroup = ({
 }) => {
   const group = navigation.getParam('group');
 
+  console.log(group);
+
   const [groupUsers, setGroupUsers] = useState(
     group
-      ? group.opponents.filter(
-          ({ _id }) => String(_id) !== String(currentUser._id)
-        )
+      ? group.opponents
+          .filter(({ _id }) => String(_id) !== String(currentUser._id))
+          .map(({ _id }) => _id)
       : []
   );
   const [groupInfo, setGroupInfo] = useState({

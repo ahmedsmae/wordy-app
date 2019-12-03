@@ -6,7 +6,7 @@ var s3 = new aws.S3({ region: 'ap-south-1' });
 
 const storage = multerS3({
   s3,
-  bucket: process.env.S3_BUCKET_NAME,
+  bucket: `${process.env.S3_BUCKET_NAME}/shared-images`,
 
   acl: 'public-read',
   metadata: function(req, file, cb) {

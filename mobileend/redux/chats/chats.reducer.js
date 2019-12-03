@@ -14,6 +14,7 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
     case ChatsActionTypes.CREATE_GROUP_START:
     case ChatsActionTypes.UPDATE_GROUP_INFO_START:
     case ChatsActionTypes.DELETE_CHAT_START:
+    case ChatsActionTypes.REMOVE_USER_FROM_CHAT_START:
     case ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_START:
       return {
         ...state,
@@ -41,6 +42,7 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
     case ChatsActionTypes.CREATE_GROUP_SUCCESS:
     case ChatsActionTypes.UPDATE_GROUP_INFO_SUCCESS:
     case ChatsActionTypes.DELETE_CHAT_SUCCESS:
+    case ChatsActionTypes.REMOVE_USER_FROM_CHAT_SUCCESS:
       return {
         ...state,
         userChats: payload,
@@ -83,6 +85,7 @@ const chatsReducer = (state = INITIAL_STATE, { type, payload }) => {
     case ChatsActionTypes.UPDATE_GROUP_INFO_FAILURE:
     case ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_FAILURE:
     case ChatsActionTypes.DELETE_CHAT_FAILURE:
+    case ChatsActionTypes.REMOVE_USER_FROM_CHAT_FAILURE:
       return {
         ...state,
         loading: false,

@@ -19,6 +19,8 @@ import {
   updateGroupInfoFailure,
   deleteChatSuccess,
   deleteChatFailure,
+  removeUserFromChatSuccess,
+  removeUserFromChatFailure,
   uploadMessageImageSuccess,
   uploadMessageImageFailure
 } from './chats.actions';
@@ -132,6 +134,21 @@ function* deleteChatAsync({ payload, callback }) {
   }
 }
 
+function* removeUserFromChatAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    const response = yield call(axios, APP_URLS.REMOVE_USER_FROM_CHAT(payload));
+
+    yield call(callback);
+    yield put(removeUserFromChatSuccess(response.data.userChats));
+  } catch (err) {
+    yield call(callback, err);
+    yield put(removeUserFromChatFailure(err.message));
+    console.log('removeUserFromChatAsync', err.response);
+  }
+}
+
 function* uploadMessageImageAsync({
   payload: { image, imageFileName },
   callback
@@ -186,6 +203,13 @@ function* deleteChatStart() {
   yield takeLatest(ChatsActionTypes.DELETE_CHAT_START, deleteChatAsync);
 }
 
+function* removeUserFromChatStart() {
+  yield takeLatest(
+    ChatsActionTypes.REMOVE_USER_FROM_CHAT_START,
+    removeUserFromChatAsync
+  );
+}
+
 function* uploadMessageImageStart() {
   yield takeLatest(
     ChatsActionTypes.UPLOAD_MESSAGE_IMAGE_START,
@@ -201,6 +225,7 @@ export default function* chatsSagas() {
     call(createGroupStart),
     call(updateGroupInfoStart),
     call(deleteChatStart),
+    call(removeUserFromChatStart),
     call(uploadMessageImageStart)
   ]);
 }

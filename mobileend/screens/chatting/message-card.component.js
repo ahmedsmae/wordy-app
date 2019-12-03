@@ -38,7 +38,8 @@ const MessageCard = ({
   const mySms = owner === userId;
   const sameUser = index > 0 && owner === messages[index - 1].owner;
   const lastSms = index === messages.length - 1;
-  const smsOwnerName = opponents.find(({ _id }) => _id === owner).name;
+  const ownerObject = opponents.find(({ _id }) => _id === owner);
+  const smsOwnerName = ownerObject ? ownerObject.name : 'User Left'; //user has left the chat
   const prevSms = index > 0 && messages[index - 1];
   const sameDate =
     moment(createdAt).format('LL') === moment(prevSms.createdAt).format('LL');

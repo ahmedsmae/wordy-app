@@ -3,8 +3,6 @@ import userBlankImage from '../assets/user.png';
 import groupBlankImage from '../assets/group.png';
 
 export const getChatImageSource = (chat, opponent, randomDate) => {
-  const { _id, image_uploaded, sign_in_method, image_url } = opponent;
-
   switch (true) {
     case chat && chat.group && chat.image_uploaded:
       return {
@@ -14,20 +12,20 @@ export const getChatImageSource = (chat, opponent, randomDate) => {
     case chat && chat.group && !chat.image_uploaded:
       return groupBlankImage;
 
-    case (!chat || !chat.group) && image_uploaded:
+    case (!chat || !chat.group) && opponent.image_uploaded:
       return {
-        uri: `${APP_URLS.SERVE_USER_AVATAR.url}/${_id}?r=${randomDate}`
+        uri: `${APP_URLS.SERVE_USER_AVATAR.url}/${opponent._id}?r=${randomDate}`
       };
 
     case (!chat || !chat.group) &&
-      !image_uploaded &&
-      sign_in_method === 'EMAIL/PASSWORD':
+      !opponent.image_uploaded &&
+      opponent.sign_in_method === 'EMAIL/PASSWORD':
       return userBlankImage;
 
     case (!chat || !chat.group) &&
-      !image_uploaded &&
-      sign_in_method !== 'EMAIL/PASSWORD':
-      return { uri: image_url };
+      !opponent.image_uploaded &&
+      opponent.sign_in_method !== 'EMAIL/PASSWORD':
+      return { uri: opponent.image_url };
 
     default:
       return null;
