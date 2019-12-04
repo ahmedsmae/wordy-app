@@ -39,7 +39,7 @@ router.delete('/:chatid', auth, async (req, res) => {
     }
 
     const folderName =
-      process.env.NODE_ENV !== 'production'
+      process.env.NODE_ENV === 'production'
         ? 'shared-images'
         : 'shared-images-test';
 

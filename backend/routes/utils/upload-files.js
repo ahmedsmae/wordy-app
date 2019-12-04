@@ -5,7 +5,7 @@ const aws = require('aws-sdk');
 const s3 = new aws.S3({ region: 'ap-south-1' });
 
 const bucketName = `${process.env.S3_BUCKET_NAME}/${
-  process.env.NODE_ENV !== 'production' ? 'shared-images' : 'shared-images-test'
+  process.env.NODE_ENV === 'production' ? 'shared-images' : 'shared-images-test'
 }`;
 
 const storage = multerS3({
