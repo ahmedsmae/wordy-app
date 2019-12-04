@@ -38,11 +38,16 @@ router.delete('/:chatid', auth, async (req, res) => {
         .json({ errors: [{ msg: 'User is not admin for this chat' }] });
     }
 
+    const folderName =
+      process.env.NODE_ENV !== 'production'
+        ? 'shared-images'
+        : 'shared-images-test';
+
     const deleteArray = [];
     for (msg of chat.messages) {
       if (msg.type === 'IMAGE') {
         deleteArray.push({
-          Key: `shared-images/${msg.attachment.file_name}.jpg`
+          Key: `${folderName}/${msg.attachment.file_name}.jpg`
         });
       }
     }

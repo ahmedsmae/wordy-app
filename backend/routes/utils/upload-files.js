@@ -1,12 +1,16 @@
 const multer = require('multer');
-var multerS3 = require('multer-s3');
-var aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
+const aws = require('aws-sdk');
 
-var s3 = new aws.S3({ region: 'ap-south-1' });
+const s3 = new aws.S3({ region: 'ap-south-1' });
+
+const bucketName = `${process.env.S3_BUCKET_NAME}/${
+  process.env.NODE_ENV !== 'production' ? 'shared-images' : 'shared-images-test'
+}`;
 
 const storage = multerS3({
   s3,
-  bucket: `${process.env.S3_BUCKET_NAME}/shared-images`,
+  bucket: bucketName,
 
   acl: 'public-read',
   metadata: function(req, file, cb) {
