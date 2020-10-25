@@ -28,6 +28,13 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'frontend', 'index.html'));
 });
 
+// set intervals
+// setInterval(() => {
+//   // require('./intervals/send-notifications')();
+// }, 10000);
+// require('./intervals/message-every-minute')();
+// require('./intervals/specific-date')();
+
 const expressServer = app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)
 );

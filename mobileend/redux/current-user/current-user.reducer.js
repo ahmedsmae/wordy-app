@@ -17,6 +17,7 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
     case CurrentUserActionTypes.DELETE_USER_START:
     case CurrentUserActionTypes.UPDATE_USER_AVATAR_START:
     case CurrentUserActionTypes.UPDATE_USER_INFO_START:
+    case CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_START:
     case CurrentUserActionTypes.CHANGE_USER_PASSWORD_START:
     case CurrentUserActionTypes.FORGET_USER_PASSWORD_START:
     case CurrentUserActionTypes.CONTACT_US_START:
@@ -62,6 +63,7 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
 
     case CurrentUserActionTypes.UPDATE_USER_AVATAR_FAILURE:
     case CurrentUserActionTypes.UPDATE_USER_INFO_FAILURE:
+    case CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_FAILURE:
     case CurrentUserActionTypes.CHANGE_USER_PASSWORD_FAILURE:
     case CurrentUserActionTypes.FORGET_USER_PASSWORD_FAILURE:
     case CurrentUserActionTypes.CONTACT_US_FAILURE:
@@ -71,6 +73,7 @@ const currentUserReducer = (state = INITIAL_STATE, { type, payload }) => {
       };
 
     // case CurrentUserActionTypes.CONTACT_US_SUCCESS:
+    // case CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_SUCCESS:
 
     default:
       return state;

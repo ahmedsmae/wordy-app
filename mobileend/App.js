@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { AsyncStorage, YellowBox } from 'react-native';
+import { LogBox } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { createStructuredSelector } from 'reselect';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux';
@@ -18,7 +19,7 @@ import { loadingUserStart } from './redux/current-user/current-user.actions';
 
 // enableScreens()
 // Supress unnecessary warnings
-YellowBox.ignoreWarnings([
+LogBox.ignoreLogs([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
@@ -31,6 +32,7 @@ const App = ({ loadingUserStart, currentUser }) => {
     // AsyncStorage.removeItem('BASIC_TOKEN');
     // AsyncStorage.removeItem('FACEBOOK_TOKEN');
     // AsyncStorage.removeItem('GOOGLE_TOKEN');
+    // AsyncStorage.removeItem('NOTIFICATION_TOKEN');
     loadingUserStart(err => {
       if (err) console.log(err);
       Font.loadAsync({

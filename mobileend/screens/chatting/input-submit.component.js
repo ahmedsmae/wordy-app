@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { IconButton, FAB } from 'react-native-paper';
 import Attach from './attach.component';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -78,11 +78,11 @@ const InputSubmit = ({
         />
       </View>
 
-      <IconButton
+      <FAB
+        small
         style={styles.send}
-        color="white"
         icon="send"
-        size={23}
+        color="white"
         onPress={onSendText}
       />
     </View>
@@ -128,15 +128,14 @@ const styles = StyleSheet.create({
   attach: {
     width: 40,
     height: 40,
-    transform: [{ rotate: '-120deg' }],
+    // transform: [{ rotate: '-120deg' }], //! reason why it doesn't appear on other phones
     margin: 5
   },
   send: {
     backgroundColor: Colors.ACCENT,
-    padding: 4,
+    padding: 5,
     width: 50,
     height: 50,
-    borderRadius: 25,
     elevation: 1,
     margin: 2,
     marginRight: 5,

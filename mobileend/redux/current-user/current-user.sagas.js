@@ -22,6 +22,8 @@ import {
   updateUserAvatarFailure,
   updateUserInfoSuccess,
   updateUserInfoFailure,
+  updateUserNotificationTokenSuccess,
+  updateUserNotificationTokenFailure,
   loadingUserSuccess,
   loadingUserFailure,
   signoutUserSuccess,
@@ -166,6 +168,23 @@ function* updateUserInfoAsync({ payload, callback }) {
   }
 }
 
+function* updateUserNotificationTokenAsync({ payload, callback }) {
+  try {
+    yield setAuthToken();
+
+    yield call(axios, APP_URLS.UPDATE_USER_NOTIFICATION_TOKEN(payload));
+
+    yield AsyncStorage.setItem('NOTIFICATION_TOKEN', payload);
+
+    yield call(callback);
+    yield put(updateUserNotificationTokenSuccess());
+  } catch (err) {
+    yield call(callback, err);
+    console.log('updateUserNotificationTokenAsync', err.response);
+    yield put(updateUserNotificationTokenFailure(err.message));
+  }
+}
+
 function* loadingUserAsync({ callback }) {
   try {
     yield setAuthToken();
@@ -296,6 +315,13 @@ function* updateUserInfoStart() {
   );
 }
 
+function* updateUserNotificationTokenStart() {
+  yield takeLatest(
+    CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_START,
+    updateUserNotificationTokenAsync
+  );
+}
+
 function* loadingUserStart() {
   yield takeLatest(CurrentUserActionTypes.LOADING_USER_START, loadingUserAsync);
 }
@@ -337,6 +363,7 @@ export default function* currentUserSagas() {
     call(signInWithGoogleStart),
     call(updateUserAvatarStart),
     call(updateUserInfoStart),
+    call(updateUserNotificationTokenStart),
     call(loadingUserStart),
     call(signOutUserStart),
     call(changeUserPasswordStart),

@@ -9,4 +9,6 @@ module.exports = function(app) {
   app.use('/api/chats', require('./chats/create'));
   app.use('/api/chats', require('./chats/update'));
   app.use('/api/chats', require('./chats/delete'));
+
+  app.use('/api/notifications', require('./notifications/send'));
 };

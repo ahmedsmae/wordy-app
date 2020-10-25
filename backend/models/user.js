@@ -43,13 +43,16 @@ const userSchema = new mongoose.Schema(
     },
     tokens: {
       basic_token: {
-        type: 'String'
+        type: String
       },
       facebook_token: {
-        type: 'String'
+        type: String
       },
       google_token: {
-        type: 'String'
+        type: String
+      },
+      notification_token: {
+        type: String
       }
     }
   },

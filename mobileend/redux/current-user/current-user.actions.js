@@ -100,6 +100,26 @@ export const updateUserInfoFailure = errorMessage => ({
   payload: errorMessage
 });
 
+// UPDATE USER NOTIFICATION TOKEN
+export const updateUserNotificationTokenStart = (
+  notificationToken,
+  callback
+) => ({
+  type: CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_START,
+  payload: notificationToken,
+  callback
+});
+
+export const updateUserNotificationTokenSuccess = user => ({
+  type: CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_SUCCESS,
+  payload: user
+});
+
+export const updateUserNotificationTokenFailure = errorMessage => ({
+  type: CurrentUserActionTypes.UPDATE_USER_NOTIFICATION_TOKEN_FAILURE,
+  payload: errorMessage
+});
+
 // LOADING USER
 export const loadingUserStart = callback => ({
   type: CurrentUserActionTypes.LOADING_USER_START,

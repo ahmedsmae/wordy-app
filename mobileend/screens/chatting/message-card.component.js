@@ -54,19 +54,24 @@ const MessageCard = ({
 
   const [address, setAddress] = useState('');
 
-  useEffect(() => {
-    const getAddress = async () => {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${attachment.location.lat},${attachment.location.lng}&key=${GOOGLE_API_KEY}`
-      );
-      if (!response.ok) throw new Error('Something went wrong!');
-      const resData = await response.json();
-      if (!resData.results) throw new Error('Something went wrong!');
-      setAddress(resData.results[0].formatted_address);
-    };
+  // useEffect(() => {
+  //   const getAddress = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${attachment.location.lat},${attachment.location.lng}&key=${GOOGLE_API_KEY}`
+  //       );
 
-    if (type === 'LOCATION') getAddress();
-  }, []);
+  //       if (!response.ok) return Error('Something went wrong!');
+  //       const resData = await response.json();
+  //       if (!resData.results) return Error('Something went wrong!');
+  //       setAddress(resData.results[0].formatted_address);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+
+  //   if (type === 'LOCATION') getAddress();
+  // }, []);
 
   const _handleOpenGps = () => {
     const { lat, lng } = attachment.location;
@@ -233,7 +238,7 @@ const MessageCard = ({
           {mySms && (
             <>
               <IconButton
-                icon="check"
+                icon='check'
                 size={15}
                 color={seen ? '#60bef0' : '#8d918c'}
                 style={{
@@ -246,7 +251,7 @@ const MessageCard = ({
 
               {recieved && (
                 <IconButton
-                  icon="check"
+                  icon='check'
                   size={15}
                   color={seen ? '#60bef0' : '#8d918c'}
                   style={{

@@ -234,4 +234,50 @@ router.post(
   }
 );
 
+/**
+ * @method - POST
+ * @url - '/api/users/updatenotificationtoken'
+ * @data - { notificationToken }
+ * @action - update user notification token
+ * @access - private
+ */
+router.post(
+  '/updatenotificationtoken',
+  [
+    auth,
+    [
+      check('notificationToken', 'Notification Token is required')
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { notificationToken } = req.body;
+
+    try {
+      const user = await User.findById(req.user._id);
+
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'User does not exists' }] });
+      }
+
+      user.tokens.notification_token = notificationToken;
+
+      await user.save();
+
+      res.json({ msg: 'Notification token saved successfully' });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ errors: [{ msg: err.message }] });
+    }
+  }
+);
+
 module.exports = router;

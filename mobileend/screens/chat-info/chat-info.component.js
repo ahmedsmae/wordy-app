@@ -103,7 +103,7 @@ const ChatInfo = ({
   if (!selectedChat) {
     return (
       <>
-        <ActivityIndicator style={{ flex: 1 }} size="large" />
+        <ActivityIndicator style={{ flex: 1 }} size='large' />
         <IconButton
           style={{
             position: 'absolute',
@@ -112,7 +112,7 @@ const ChatInfo = ({
             backgroundColor: 'white'
           }}
           size={30}
-          icon="arrow-left"
+          icon='arrow-left'
           onPress={() => navigation.goBack()}
         />
       </>
@@ -160,8 +160,8 @@ const ChatInfo = ({
                 })}
               </Paragraph>
               <IconButton
-                icon="close"
-                color="white"
+                icon='close'
+                color='white'
                 size={30}
                 onPress={() => setShowPreview(false)}
               />
@@ -178,7 +178,7 @@ const ChatInfo = ({
             randomDate
           )}
           style={{ width, height: width / 1.5 }}
-          resizeMode="cover"
+          resizeMode='cover'
         />
 
         <View style={{ paddingHorizontal: 10 }}>
@@ -306,8 +306,8 @@ const ChatInfo = ({
           left: 0
         }}
         size={30}
-        color="white"
-        icon="arrow-left"
+        color='white'
+        icon='arrow-left'
         onPress={() => navigation.goBack()}
       />
 
@@ -320,8 +320,8 @@ const ChatInfo = ({
               right: 10
             }}
             size={25}
-            icon="pencil"
-            color="white"
+            icon='pencil'
+            color='white'
             onPress={() =>
               navigation.navigate('EditGroup', { group: selectedChat })
             }
@@ -337,8 +337,8 @@ const ChatInfo = ({
               right: 10
             }}
             size={30}
-            icon="close"
-            color="white"
+            icon='close'
+            color='white'
             onPress={() =>
               Alert.alert(
                 'Leave Chat',

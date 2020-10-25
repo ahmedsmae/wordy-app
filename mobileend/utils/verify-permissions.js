@@ -42,3 +42,16 @@ export const verifyLocationPermission = async () => {
   }
   return true;
 };
+
+export const verifyPushNotificationsPermission = async () => {
+  const result = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  if (result.status !== 'granted') {
+    Alert.alert(
+      'Insufficient permissions!',
+      'You need to grant push notifications permission to use this feature.',
+      [{ text: 'Okay' }]
+    );
+    return false;
+  }
+  return true;
+};

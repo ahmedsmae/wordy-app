@@ -50,7 +50,7 @@ class Chatting extends React.Component {
     // this.backHandler.remove();
   }
 
-  componentWillReceiveProps({ contact }) {
+  UNSAFE_componentWillReceiveProps({ contact }) {
     const userId = this.props.currentUser._id;
 
     if (contact) {
@@ -148,7 +148,7 @@ class Chatting extends React.Component {
       { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
     );
 
-    const imageFileName = Date.now().toString();
+    const imageFileName = `${Date.now().toString()}.jpg`;
     uploadMessageImageStart(imageFileName, manipResult, err => {
       // callback after uploading message
       if (err) return console.log(err);
@@ -179,7 +179,7 @@ class Chatting extends React.Component {
       <>
         <ImageBackground
           source={require('../../assets/chat-bg.jpg')}
-          resizeMode="repeat"
+          resizeMode='repeat'
           style={styles.imageBg}
           imageStyle={{ opacity: 0.3 }}
         />
@@ -228,8 +228,8 @@ class Chatting extends React.Component {
                   })}
                 </Paragraph>
                 <IconButton
-                  icon="close"
-                  color="white"
+                  icon='close'
+                  color='white'
                   size={30}
                   onPress={() => this.setState({ showImagePreview: false })}
                 />
@@ -238,17 +238,17 @@ class Chatting extends React.Component {
           />
         </Modal>
 
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
           <ScrollView
             contentContainerStyle={{ flex: 1 }}
-            keyboardShouldPersistTaps="always"
+            keyboardShouldPersistTaps='always'
           >
             <FlatList
               style={{ flex: 1, marginHorizontal: 10, marginBottom: 60 }}
               ListEmptyComponent={() => (
                 <PlaceholderParagraph
-                  title="This chat still empty"
-                  subtitle="Be Wordy and send the first message..."
+                  title='This chat still empty'
+                  subtitle='Be Wordy and send the first message...'
                 />
               )}
               ref={this.flatListMessages}

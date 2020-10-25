@@ -3,7 +3,6 @@
     "name": "Wordy App",
     "slug": "wordy-app",
     "privacy": "unlisted",
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android",

@@ -1,6 +1,6 @@
-const production = true;
+const production = false;
 
-const DEV_BASE_URL = 'http://192.168.1.100:5000';
+const DEV_BASE_URL = 'http://192.168.1.102:5000';
 const PRO_BASE_URL = 'https://afifi-wordy.herokuapp.com';
 
 export const BASE_URL = production ? PRO_BASE_URL : DEV_BASE_URL;
@@ -32,6 +32,11 @@ export const APP_URLS = {
     method: 'PATCH',
     url: `${BASE_URL}/api/users/updateinfo`,
     data: userInfo
+  }),
+  UPDATE_USER_NOTIFICATION_TOKEN: notificationToken => ({
+    method: 'POST',
+    url: `${BASE_URL}/api/users/updatenotificationtoken`,
+    data: { notificationToken }
   }),
   CHANGE_USER_PASSWORD: userPasswords => ({
     method: 'PATCH',
@@ -70,7 +75,9 @@ export const APP_URLS = {
     url: `${BASE_URL}/api/chats/avatar`
   },
   SERVE_MESSAGE_IMAGE: imageFileName =>
-    `http://wordy-app-aws.s3.ap-south-1.amazonaws.com/shared-images/${imageFileName}.jpg`,
+    `http://wordy-app-aws.s3.ap-south-1.amazonaws.com/${
+      production ? 'shared-images' : 'shared-images-test'
+    }/${imageFileName}`,
   UPLOAD_MESSAGE_IMAGE: {
     method: 'POST',
     url: `${BASE_URL}/api/chats/messages` // + /:filename

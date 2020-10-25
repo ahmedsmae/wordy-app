@@ -18,11 +18,7 @@ const storage = multerS3({
   },
   key: function(req, file, cb) {
     // :filename is expected with the request
-    console.log(file);
-    console.log(req.params);
-
-    const extension = file.originalname.split('.')[1];
-    cb(null, req.params.filename + '.' + extension);
+    cb(null, req.params.filename);
   }
 });
 
